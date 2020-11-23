@@ -1,4 +1,5 @@
 #include <iostream>
+
 #define GL_SILENCE_DEPRECATION
 ///Freeglut
 #include <GL/glew.h>
@@ -33,9 +34,9 @@ double rotate_z = 0;
 void changeAnimation(int key, int x, int y) {
     if (key == GLUT_KEY_RIGHT)
         currentAnimationNumber++;
+    if (key == GLUT_KEY_LEFT)
+        currentAnimationNumber--;
     currentAnimationNumber = currentAnimationNumber % 8;
-
-    glutPostRedisplay();
 }
 
 void renderRectangle() {
@@ -61,6 +62,7 @@ void renderRectangle() {
 
 void renderWireCube() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
     glRotatef(rotate_x, 1.0, 0.0, 0.0);
     glRotatef(rotate_y, 0.0, 1.0, 0.0);
@@ -79,6 +81,7 @@ void renderWireCube() {
 
 void renderSolidCube() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
     glRotatef(rotate_x, 1.0, 0.0, 0.0);
     glRotatef(rotate_y, 0.0, 1.0, 0.0);
@@ -98,6 +101,7 @@ void renderSphere() {
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.05f;
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
 
     gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -113,6 +117,7 @@ void renderTeapot() {
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.05f;
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
 
     gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -131,6 +136,7 @@ void renderDots() {
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.05f;
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
 
     gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -206,8 +212,7 @@ void renderGradientTriangle() {
 void Update() {
     switch (currentAnimationNumber) {
         case 0:
-            renderSphere();
-//            renderRectangle();
+            renderRectangle();
             break;
         case 1:
             renderWireCube();
@@ -216,8 +221,7 @@ void Update() {
             renderSolidCube();
             break;
         case 3:
-            renderRectangle();
-//            renderSphere();
+            renderSphere();
             break;
         case 4:
             renderTeapot();
