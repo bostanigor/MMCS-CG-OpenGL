@@ -1,8 +1,8 @@
 #include <iostream>
 #define GL_SILENCE_DEPRECATION
 ///Freeglut
-#include <GL/freeglut.h>
 #include <GL/glew.h>
+#include <GL/freeglut.h>
 ///Apple's GLUT
 //#include <GLUT/glut.h>
 using namespace std;
