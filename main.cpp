@@ -2,99 +2,254 @@
 #define GL_SILENCE_DEPRECATION
 ///Freeglut
 #include <GL/freeglut.h>
+#include <GL/glew.h>
 ///Apple's GLUT
 //#include <GLUT/glut.h>
 using namespace std;
 
 
-double rotate_x =0;
-double rotate_y =0;
-double rotate_z =0;
+static int w = 0, h = 0;
+static float Angle = 0;
+static int currentAnimationNumber = 0;
 
+void Init() {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+}
 
-void renderRectangle()
-{
+void Reshape(int width, int height) {
+    w = width;
+    h = height;
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+    glutPostRedisplay();
+}
+
+double rotate_x = 0;
+double rotate_y = 0;
+double rotate_z = 0;
+
+void changeAnimation(int key, int x, int y) {
+    if (key == GLUT_KEY_RIGHT)
+        currentAnimationNumber++;
+    currentAnimationNumber = currentAnimationNumber % 8;
+
+    glutPostRedisplay();
+}
+
+void renderRectangle() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glRotatef(rotate_z, 0.0, 0.0, 1.0);
+    rotate_z++;
 
     glBegin(GL_QUADS);
-    glColor3f(1.0, 0.0, 0.0);    glVertex2f(-0.5f, -0.5f);
-    glColor3f(0.0, 1.0, 0.0);    glVertex2f(-0.5f, -0.5f);
-    glColor3f(0.0, 0.0, 1.0);    glVertex2f(0.5f, 0.5f);
-    glColor3f(1.0, 1.0, 1.0);    glVertex2f(0.5f, -0.5f);
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex2f(-0.5f, -0.5f);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex2f(-0.5f, 0.5f);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex2f(0.5f, 0.5f);
+    glColor3f(1.0, 1.0, 1.0);
+    glVertex2f(0.5f, -0.5f);
     glEnd();
+
     glFlush();
+    glutSwapBuffers();
 }
 
-void renderWireCube()
-{
+void renderWireCube() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glRotatef(rotate_x, 1.0, 0.0, 0.0);
     glRotatef(rotate_y, 0.0, 1.0, 0.0);
     glRotatef(rotate_z, 0.0, 0.0, 1.0);
+
     glutWireCube(1);
+    glScalef(10, 10, 10);
+
     glFlush();
+    glutSwapBuffers();
+
+    rotate_x++;
+    rotate_y++;
+    rotate_z++;
 }
 
-//Глобальные статические переменные -
-//хранят текущий размер экрана
-static int w = 0 , h = 0 ;
-//Функция вызываемая перед вхождением в главный цикл
-void Init () {
-    glClearColor( 0.0f,0.0f,0.0f,1.0f) ;
+void renderSolidCube() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    glRotatef(rotate_x, 1.0, 0.0, 0.0);
+    glRotatef(rotate_y, 0.0, 1.0, 0.0);
+    glRotatef(rotate_z, 0.0, 0.0, 1.0);
+
+    glutSolidCube(1);
+
+    glFlush();
+    glutSwapBuffers();
+
+    rotate_x++;
+    rotate_y++;
+    rotate_z++;
 }
-//Функция вызываемая каждый кадр -
-// для его отрисовки, вычислений и т. д.
-void Update () {
-    glClear(GL_COLOR_BUFFER_BIT) ;
-//    renderRectangle();
-    renderWireCube();
-    glutSwapBuffers() ;
+
+void renderSphere() {
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+
+    glutWireSphere(50.0f, 10, 10);
+
+    glFlush();
+    glutSwapBuffers();
 }
-//Функця вызываемая при изменении размеров окна
-void Reshape(int width , int height) {
-w = width ; h = height ;
+
+void renderTeapot() {
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+
+    glutWireTeapot(50.0f);
+    glFlush();
+
+    glutSwapBuffers();
 }
 
 
-int main(int argc, char* argv [])
-{
-    //Инициализировать сам glut
+void renderDots() {
+    glPointSize(10.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+
+    glBegin(GL_POINTS);
+    glVertex3f(-50.0f, -50.0f, -50.0f);
+    glVertex3f(-50.0f, -50.0f, 50.0f);
+    glVertex3f(-50.0f, 50.0f, -50.0f);
+    glVertex3f(-50.0f, 50.0f, 50.0f);
+    glVertex3f(50.0f, -50.0f, -50.0f);
+    glVertex3f(50.0f, -50.0f, 50.0f);
+    glVertex3f(50.0f, 50.0f, -50.0f);
+    glVertex3f(50.0f, 50.0f, 50.0f);
+    glEnd();
+    glFlush();
+
+    glutSwapBuffers();
+}
+
+void renderTriangles() {
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+
+    glBegin(GL_TRIANGLES);
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(-75.0f, 0.0f, -50.0f);
+    glVertex3f(-75.0f, 0.0f, 50.0f);
+    glVertex3f(75.0f, 0.0f, 50.0f);
+
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(-75.0f, 0.0f, -50.0f);
+    glVertex3f(75.0f, 0.0f, -50.0f);
+    glVertex3f(75.0f, 0.0f, 50.0f);
+
+    glEnd();
+    glFlush();
+
+    glutSwapBuffers();
+}
+
+void renderGradientTriangle() {
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+
+    GLfloat BlueCol[3] = {0, 0, 1};
+    glBegin(GL_TRIANGLES);
+
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glColor3ub(0, 255, 0);
+    glVertex3f(75.0, 0.0, 0.0);
+    glColor3fv(BlueCol);
+    glVertex3f(75.0, 75.0, 0.0);
+
+    glEnd();
+    glFlush();
+
+    glutSwapBuffers();
+}
+
+void Update() {
+    switch (currentAnimationNumber) {
+        case 0:
+            renderSphere();
+//            renderRectangle();
+            break;
+        case 1:
+            renderWireCube();
+            break;
+        case 2:
+            renderSolidCube();
+            break;
+        case 3:
+            renderRectangle();
+//            renderSphere();
+            break;
+        case 4:
+            renderTeapot();
+            break;
+        case 5:
+            renderDots();
+            break;
+        case 6:
+            renderTriangles();
+            break;
+        case 7:
+            renderGradientTriangle();
+            break;
+    }
+}
+
+int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
-    //Установить начальное положение окна
-    glutInitWindowPosition(100,100);
-    //Установить начальные размеры окна
-    glutInitWindowSize(800,600);
-    //Установить параметры окна - двойная буфферизация
-    // и поддержка цвета RGBA
 
-    ///Apple's GLUT
-//    glutInitDisplayMode(GLUT_3_2_CORE_PROFILE | GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(800, 600);
 
-    ///Freeglut
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    glutInitContextVersion ( 3, 2);
-    glutInitContextFlags   ( GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
-    glutInitContextProfile ( GLUT_CORE_PROFILE );
-
-    //Создать окно с заголовком OpenGL
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutCreateWindow("OpenGL");
+    Init();
 
-
-    //Укажем glut функцию, которая будет вызываться каждый кадр
     glutIdleFunc(Update);
-    //Укажем glut функцию, которая будет рисовать каждый кадр
-    glutDisplayFunc( Update );
-    //Укажем glut функцию, которая будет вызываться при
-    // изменении размера окна приложения
+    glutDisplayFunc(Update);
     glutReshapeFunc(Reshape);
-    Init() ;
+    glutSpecialFunc(changeAnimation);
 
-    printf("GL_VERSION = %s\n",glGetString(GL_VERSION) );
-
-    //Войти в главный цикл приложения
     glutMainLoop();
+
     return 0;
 }
