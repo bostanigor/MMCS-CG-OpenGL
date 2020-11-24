@@ -116,15 +116,14 @@ void renderSolidCube() {
 void renderSphere() {
     setPerspective();
     glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
+    Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
 
     gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    glutWireSphere(50.0f, 10, 10);
+    glutWireSphere(50.0f, 100, 100);
 
     glFlush();
     glutSwapBuffers();
@@ -133,7 +132,7 @@ void renderSphere() {
 void renderTeapot() {
     setPerspective();
     glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
+    Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
@@ -153,7 +152,7 @@ void renderDots() {
     glPointSize(10.0f);
 
     glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
+    Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
     glLoadIdentity();
@@ -179,7 +178,7 @@ void renderDots() {
 void renderTriangles() {
     setPerspective();
     glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
+    Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
@@ -207,12 +206,14 @@ void renderTriangles() {
 void renderGradientTriangle() {
     setPerspective();
     glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
+    Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
     gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 1.0f, 0.0f, 0.0f);
     glRotatef(Angle, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 0.0f, 1.0f);
 
     GLfloat BlueCol[3] = {0, 0, 1};
     glBegin(GL_TRIANGLES);
@@ -233,6 +234,7 @@ void renderGradientTriangle() {
 void Update() {
     switch (currentAnimationNumber) {
         case 0:
+//            renderSphere();
             renderRectangle();
             break;
         case 1:
@@ -242,6 +244,7 @@ void Update() {
             renderSolidCube();
             break;
         case 3:
+//            renderRectangle();
             renderSphere();
             break;
         case 4:
