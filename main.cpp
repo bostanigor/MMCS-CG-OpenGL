@@ -11,35 +11,18 @@ using namespace std;
 static int w = 0, h = 0;
 static float Angle = 0;
 static int currentAnimationNumber = 0;
+double rotate_x = 0;
+double rotate_y = 0;
+double rotate_z = 0;
 
 void Init() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void setOrthogonal() {
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glutPostRedisplay();
-}
-
-void setPerspective() {
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
-  glutPostRedisplay();
-}
-
 void Reshape(int width, int height) {
-  w = width;
-  h = height;
-//  setPerspective();
+    w = width;
+    h = height;
 }
-
-double rotate_x = 0;
-double rotate_y = 0;
-double rotate_z = 0;
 
 void changeAnimation(int key, int x, int y) {
     if (key == GLUT_KEY_RIGHT)
@@ -49,8 +32,23 @@ void changeAnimation(int key, int x, int y) {
     currentAnimationNumber = (currentAnimationNumber + 8) % 8;
 }
 
+void orthogonal() {
+  glViewport(0, 0, w, h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glutPostRedisplay();
+}
+
+void perspective() {
+  glViewport(0, 0, w, h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+  glutPostRedisplay();
+}
+
 void renderRectangle() {
-    setOrthogonal();
+    orthogonal();
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -73,7 +71,7 @@ void renderRectangle() {
 }
 
 void renderWireCube() {
-    setOrthogonal();
+    orthogonal();
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
@@ -94,7 +92,7 @@ void renderWireCube() {
 }
 
 void renderSolidCube() {
-    setOrthogonal();
+    orthogonal();
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
@@ -114,7 +112,7 @@ void renderSolidCube() {
 }
 
 void renderSphere() {
-    setPerspective();
+    perspective();
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
@@ -130,7 +128,7 @@ void renderSphere() {
 }
 
 void renderTeapot() {
-    setPerspective();
+    perspective();
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
@@ -148,7 +146,7 @@ void renderTeapot() {
 
 
 void renderDots() {
-    setPerspective();
+    perspective();
     glPointSize(10.0f);
 
     glMatrixMode(GL_MODELVIEW);
@@ -176,7 +174,7 @@ void renderDots() {
 }
 
 void renderTriangles() {
-    setPerspective();
+    perspective();
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
@@ -204,7 +202,7 @@ void renderTriangles() {
 }
 
 void renderGradientTriangle() {
-    setPerspective();
+    perspective();
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.5f;
     glClear(GL_COLOR_BUFFER_BIT);
@@ -234,7 +232,6 @@ void renderGradientTriangle() {
 void Update() {
     switch (currentAnimationNumber) {
         case 0:
-//            renderSphere();
             renderRectangle();
             break;
         case 1:
@@ -244,7 +241,6 @@ void Update() {
             renderSolidCube();
             break;
         case 3:
-//            renderRectangle();
             renderSphere();
             break;
         case 4:
