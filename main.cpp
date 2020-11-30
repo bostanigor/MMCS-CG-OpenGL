@@ -9,254 +9,73 @@
 using namespace std;
 
 static int w = 0, h = 0;
-static float Angle = 0;
-static int currentAnimationNumber = 0;
+float rotate_x = 0;
+float rotate_y = 0;
+float ambient[] = {0.2, 0.2, 0.2, 1.0};
+float greencolor[] = {0.2, 0.8, 0.0, 0.8};
+float treecolor[] = {0.9, 0.6, 0.3, 0.8};
+float lightpos[] = {1.0, 1.0, 1.0};
 
 void Init() {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-}
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+    gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
-void setOrthogonal() {
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glutPostRedisplay();
-}
-
-void setPerspective() {
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
-  glutPostRedisplay();
 }
 
 void Reshape(int width, int height) {
-  w = width;
-  h = height;
-//  setPerspective();
+    w = width;
+    h = height;
 }
 
-double rotate_x = 0;
-double rotate_y = 0;
-double rotate_z = 0;
-
-void changeAnimation(int key, int x, int y) {
-    if (key == GLUT_KEY_RIGHT)
-        currentAnimationNumber++;
-    if (key == GLUT_KEY_LEFT)
-        currentAnimationNumber--;
-    currentAnimationNumber = (currentAnimationNumber + 8) % 8;
-}
-
-void renderRectangle() {
-    setOrthogonal();
-    glMatrixMode(GL_MODELVIEW);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void orthogonal() {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glRotatef(rotate_z, 0.0, 0.0, 1.0);
-    rotate_z++;
-
-    glBegin(GL_QUADS);
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex2f(-0.5f, -0.5f);
-    glColor3f(0.0, 1.0, 0.0);
-    glVertex2f(-0.5f, 0.5f);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex2f(0.5f, 0.5f);
-    glColor3f(1.0, 1.0, 1.0);
-    glVertex2f(0.5f, -0.5f);
-    glEnd();
-
-    glFlush();
-    glutSwapBuffers();
+    glutPostRedisplay();
 }
 
-void renderWireCube() {
-    setOrthogonal();
-    glMatrixMode(GL_MODELVIEW);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
+void perspective() {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+    glutPostRedisplay();
+}
+
+
+void renderChristmasTree() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glPushMatrix();
     glRotatef(rotate_x, 1.0, 0.0, 0.0);
     glRotatef(rotate_y, 0.0, 1.0, 0.0);
-    glRotatef(rotate_z, 0.0, 0.0, 1.0);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
-    glutWireCube(1);
-    glScalef(10, 10, 10);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, treecolor);
+    glTranslatef(0.0, 0.0, -0.7);
 
-    glFlush();
-    glutSwapBuffers();
+    glutSolidCylinder(0.1, 0.2, 20, 20);
 
-    rotate_x++;
-    rotate_y++;
-    rotate_z++;
-}
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, greencolor);
+    glTranslatef(0.0, 0.0, 0.2);
 
-void renderSolidCube() {
-    setOrthogonal();
-    glMatrixMode(GL_MODELVIEW);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glLoadIdentity();
-    glRotatef(rotate_x, 1.0, 0.0, 0.0);
-    glRotatef(rotate_y, 0.0, 1.0, 0.0);
-    glRotatef(rotate_z, 0.0, 0.0, 1.0);
+    glutSolidCone(0.5, 0.5, 20, 20);
+    glTranslatef(0.0, 0.0, 0.3);
+    glutSolidCone(0.4, 0.4, 20, 20);
+    glTranslatef(0.0, 0.0, 0.3);
+    glutSolidCone(0.3, 0.3, 20, 20);
 
-    glutSolidCube(1);
-
-    glFlush();
-    glutSwapBuffers();
-
-    rotate_x++;
-    rotate_y++;
-    rotate_z++;
-}
-
-void renderSphere() {
-    setPerspective();
-    glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    glutWireSphere(50.0f, 10, 10);
-
-    glFlush();
+    glPopMatrix();
     glutSwapBuffers();
 }
 
-void renderTeapot() {
-    setPerspective();
-    glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    glutWireTeapot(50.0f);
-    glFlush();
-
-    glutSwapBuffers();
-}
-
-
-void renderDots() {
-    setPerspective();
-    glPointSize(10.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    glBegin(GL_POINTS);
-    glVertex3f(-50.0f, -50.0f, -50.0f);
-    glVertex3f(-50.0f, -50.0f, 50.0f);
-    glVertex3f(-50.0f, 50.0f, -50.0f);
-    glVertex3f(-50.0f, 50.0f, 50.0f);
-    glVertex3f(50.0f, -50.0f, -50.0f);
-    glVertex3f(50.0f, -50.0f, 50.0f);
-    glVertex3f(50.0f, 50.0f, -50.0f);
-    glVertex3f(50.0f, 50.0f, 50.0f);
-    glEnd();
-    glFlush();
-
-    glutSwapBuffers();
-}
-
-void renderTriangles() {
-    setPerspective();
-    glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    glBegin(GL_TRIANGLES);
-
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(-75.0f, 0.0f, -50.0f);
-    glVertex3f(-75.0f, 0.0f, 50.0f);
-    glVertex3f(75.0f, 0.0f, 50.0f);
-
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(-75.0f, 0.0f, -50.0f);
-    glVertex3f(75.0f, 0.0f, -50.0f);
-    glVertex3f(75.0f, 0.0f, 50.0f);
-
-    glEnd();
-    glFlush();
-
-    glutSwapBuffers();
-}
-
-void renderGradientTriangle() {
-    setPerspective();
-    glMatrixMode(GL_MODELVIEW);
-    Angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
-
-    GLfloat BlueCol[3] = {0, 0, 1};
-    glBegin(GL_TRIANGLES);
-
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex3f(0.0, 0.0, 0.0);
-    glColor3ub(0, 255, 0);
-    glVertex3f(75.0, 0.0, 0.0);
-    glColor3fv(BlueCol);
-    glVertex3f(75.0, 75.0, 0.0);
-
-    glEnd();
-    glFlush();
-
-    glutSwapBuffers();
-}
 
 void Update() {
-    switch (currentAnimationNumber) {
-        case 0:
-            renderRectangle();
-            break;
-        case 1:
-            renderWireCube();
-            break;
-        case 2:
-            renderSolidCube();
-            break;
-        case 3:
-            renderSphere();
-            break;
-        case 4:
-            renderTeapot();
-            break;
-        case 5:
-            renderDots();
-            break;
-        case 6:
-            renderTriangles();
-            break;
-        case 7:
-            renderGradientTriangle();
-            break;
-    }
+    renderChristmasTree();
 }
 
 int main(int argc, char *argv[]) {
@@ -272,7 +91,7 @@ int main(int argc, char *argv[]) {
     glutIdleFunc(Update);
     glutDisplayFunc(Update);
     glutReshapeFunc(Reshape);
-    glutSpecialFunc(changeAnimation);
+//    glutSpecialFunc(changeAnimation);
 
     glutMainLoop();
 
