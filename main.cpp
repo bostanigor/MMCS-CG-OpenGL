@@ -13,6 +13,7 @@ float rotate_x = 0;
 float rotate_y = 0;
 float ambient[] = {0.2, 0.2, 0.2, 1.0};
 float greencolor[] = {0.2, 0.8, 0.0, 0.8};
+float redcolor[] = {0.8, 0.0, 0.2, 0.8};
 float treecolor[] = {0.9, 0.6, 0.3, 0.8};
 float lightpos[] = {1.0, 1.0, 1.0};
 
@@ -23,8 +24,7 @@ void Init() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-
+    //glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 }
 
 void Reshape(int width, int height) {
@@ -54,13 +54,30 @@ void renderChristmasTree() {
     glRotatef(rotate_x, 1.0, 0.0, 0.0);
     glRotatef(rotate_y, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-
+/*
+    float mat_dif[]={0.8 ,0.8 ,0.8};
+    float mat_amb[]= {0.2 ,0.2 ,0.2};
+    float mat_spec[]={0.6 ,0.6 ,0.6};
+    float shininess = 0.7*128;
+    glMaterialfv (GL_FRONT_AND_BACK,GL_AMBIENT,mat_amb);
+    glMaterialfv (GL_FRONT_AND_BACK,GL_DIFFUSE, mat_dif );
+    glMaterialfv (GL_FRONT_AND_BACK,GL_SPECULAR, mat_spec );
+    glMaterialf (GL_FRONT,GL_SHININESS, shininess );
+*/
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, treecolor);
+    //glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, treecolor);
+    float new_treecolor[] = { 0.8 , 0.8 , 0.8 , 1.0 };
+    //glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, treecolor);
+    //glMaterialf(GL_FRONT, GL_SHININESS, 70.0);
     glTranslatef(0.0, 0.0, -0.7);
 
     glutSolidCylinder(0.1, 0.2, 20, 20);
 
+    float gl_dif[] = { 0.8 , 0.8 , 0.8 , 1.0 };
+    float gl_emi[] = { 0.0 , 0.0 , 0.0 , 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, greencolor);
+    //glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, gl_emi);
+    //glMaterialf(GL_FRONT, GL_SHININESS, 70.0);
     glTranslatef(0.0, 0.0, 0.2);
 
     glutSolidCone(0.5, 0.5, 20, 20);
@@ -68,6 +85,9 @@ void renderChristmasTree() {
     glutSolidCone(0.4, 0.4, 20, 20);
     glTranslatef(0.0, 0.0, 0.3);
     glutSolidCone(0.3, 0.3, 20, 20);
+
+
+    //glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, greencolor);
 
     glPopMatrix();
     glutSwapBuffers();
