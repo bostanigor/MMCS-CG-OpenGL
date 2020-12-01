@@ -270,7 +270,6 @@ void addTree()
 
     glTranslatef(0, 0, 25);
 
-    //glColor3f(0, 1, 0);
     addCone(50, 100);
     addGarland(35, 100);
     glTranslatef(0, 0, 50);
@@ -289,15 +288,9 @@ void addTree()
 
 void loadTextures()
 {
-    //auto textureFlags = SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT;
     floorTexture = SOIL_load_OGL_texture("floor_148.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    if (floorTexture == 0)
-        std::cout << "хуй";
-    else
-        std::cout << "пизда";
     ballTexture = SOIL_load_OGL_texture("glitter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 }
-
 
 void addFloor(int x, int y, int z, int size)
 {
