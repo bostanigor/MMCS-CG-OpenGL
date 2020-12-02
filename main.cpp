@@ -11,6 +11,7 @@
 //#include <GLUT/glut.h>
 
 #include "Car.h"
+
 using namespace std;
 #define PI 3.1415
 
@@ -18,15 +19,14 @@ static int w = 0, h = 0;
 double rotate_x = 0;
 double rotate_y = 0;
 double rotate_z = 0;
-double tree_rotate;
-bool wire;
-bool ligth_toggle = false;
+double tree_rotation;
+bool lights = false;
 
 auto car = Car();
 
 GLuint floorTexture, ballTexture;
 
-std::tuple<float, float, float> getCoords() {
+std::tuple<float, float, float> coordinates() {
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
@@ -43,50 +43,53 @@ void Reshape(int width, int height) {
 }
 
 void cameraKeys(unsigned char key, int x, int y) {
-  switch (key) {
-    case 'w':
-      rotate_x += 5;
-      break;
-    case 's':
-      rotate_x -= 5;
-      break;
-    case 'q':
-      rotate_y += 5;
-      break;
-    case 'e':
-      rotate_y -= 5;
-      break;
-    case 'a':
-      rotate_z += 5;
-      break;
-    case 'd':
-      rotate_z -= 5;
-      break;
-  }
-  glutPostRedisplay();
-}
-void carKeys(int key, int x, int y) {
-  switch (key) {
-    case GLUT_KEY_UP:
-      car.move(5);
-      break;
-    case GLUT_KEY_DOWN:
-      car.move(-5);
-      break;
-    case GLUT_KEY_RIGHT:
-      car.turn(2);
-      break;
-    case GLUT_KEY_LEFT:
-      car.turn(-2);
-      break;
-    case GLUT_KEY_F1:
-      car.lights_up = !car.lights_up;
-      break;
-  }
-  glutPostRedisplay();
+    switch (key) {
+        case 'w':
+            rotate_x += 5;
+            break;
+        case 's':
+            rotate_x -= 5;
+            break;
+        case 'q':
+            rotate_y += 5;
+            break;
+        case 'e':
+            rotate_y -= 5;
+            break;
+        case 'a':
+            rotate_z += 5;
+            break;
+        case 'd':
+            rotate_z -= 5;
+            break;
+    }
+    glutPostRedisplay();
 }
 
-void addCone(float diam, float h) {
+void carKeys(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_UP:
+            car.move(5);
+            break;
+        case GLUT_KEY_DOWN:
+            car.move(-5);
+            break;
+        case GLUT_KEY_RIGHT:
+            car.turn(2);
+            break;
+        case GLUT_KEY_LEFT:
+            car.turn(-2);
+            break;
+        case GLUT_KEY_F1:
+            car.lights_up = !car.lights_up;
+            break;
+        case GLUT_KEY_F2:
+            lights = !lights;
+    }
+    glutPostRedisplay();
+}
+
+void cone(float diam, float h) {
     float mat_amb[] = {0.0, 0.0, 0.0, 1.0};
     float mat_dif[] = {0.0, 1.0, 0.0, 1.0};
     float mat_spec[] = {0.5, 0.5, 0.5, 1.0};
@@ -100,7 +103,7 @@ void addCone(float diam, float h) {
     glutSolidCone(diam, h, 100, 1);
 }
 
-void addBall(double radius, double offset, bool tex = true) {
+void ball(double radius, double offset, bool tex = true) {
     if (tex) {
         GLUquadricObj *quadObj;
         quadObj = gluNewQuadric();
@@ -126,6 +129,18 @@ void addBall(double radius, double offset, bool tex = true) {
     }
 }
 
+void treeDecorations(double radius, double ballRadius, int ballCount) {
+    glPushMatrix();
+
+    double angle = 360.0 / ballCount;
+    for (int i = 0; i < ballCount; i++) {
+        ball(ballRadius, radius);
+        glRotatef(angle, 0.0, 0.0, 1.0);
+    }
+
+    glPopMatrix();
+}
+
 void addCycleOFBalls(double cycleRadius) {
     float mat_dif[] = {1.0, 1.0, 1.0, 1.0};
     float mat_amb[] = {0.0, 0.0, 0.0, 1.0};
@@ -140,7 +155,7 @@ void addCycleOFBalls(double cycleRadius) {
     int n = (2 * PI * cycleRadius) / 20;
     double angle = 360 / n;
     for (int i = 0; i < n; i++) {
-        addBall(5, cycleRadius);
+        ball(5, cycleRadius);
         glRotatef(angle, 0.0, 0.0, 1.0);
     }
 }
@@ -180,11 +195,10 @@ void addGarland(float off, float height) {
     float mat_emmis[] = {0.0, 0.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
 
-
     int cnt = 12;
     float angle = 360 / (cnt * 1.0);
     for (int i = 0; i < cnt; i++) {
-        addBall(3, off, false);
+        ball(3, off, false);
         glRotatef(angle, 0.0, 0.0, 1.0);
     }
 
@@ -201,7 +215,7 @@ void addGarland(float off, float height) {
 
 void addTree() {
     glPushMatrix();
-    glRotatef(tree_rotate, 0.0, 0.0, 1.0);
+    glRotatef(tree_rotation, 0.0, 0.0, 1.0);
 
     float mat_amb[] = {0.5, 0.5, 0.5};
     float mat_dif[] = {0.5, 0.5, 0.5};
@@ -216,15 +230,15 @@ void addTree() {
     glutSolidCylinder(10, 25, 150, 1);
 
     glTranslatef(0, 0, 25);
-    addCone(70, 100);
+    cone(70, 100);
     addGarland(50, 100);
 
     glTranslatef(0, 0, 50);
-    addCone(60, 80);
+    cone(60, 80);
     addGarland(45, 90);
 
     glTranslatef(0, 0, 50);
-    addCone(50, 60);
+    cone(50, 60);
     addGarland(35, 70);
 
     addTreeBalls();
@@ -235,7 +249,8 @@ void addTree() {
 
 void loadTextures() {
     floorTexture = SOIL_load_OGL_texture("../assets/floor.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    ballTexture =  SOIL_load_OGL_texture("../assets/glitter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    ballTexture = SOIL_load_OGL_texture("../assets/glitter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+                                        SOIL_FLAG_INVERT_Y);
 }
 
 void addFloor(int x, int y, int z, int size) {
@@ -280,7 +295,7 @@ void addPole() {
     glutSolidCylinder(2, 150, 12, 1);
     glTranslatef(0, 0, 150);
 
-    if (ligth_toggle) {
+    if (lights) {
         float mat_emmis[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
         glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
     }
@@ -317,7 +332,7 @@ void addPoles() {
 void addStreet() {
     glPushMatrix();
 
-    auto m = getCoords();
+    auto m = coordinates();
     addFloor(get<0>(m), get<1>(m), get<2>(m), 2000);
 
     addPoles();
@@ -326,7 +341,7 @@ void addStreet() {
 }
 
 void addCar() {
-  car.render();
+    car.render();
 }
 
 void renderScene() {
@@ -362,7 +377,7 @@ void renderScene() {
 }
 
 void Update() {
-    tree_rotate += 1;
+    tree_rotation += 1;
     renderScene();
 }
 
@@ -379,7 +394,7 @@ int main(int argc, char **argv) {
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
     wire = 0;
-    tree_rotate = 0;
+    tree_rotation = 0;
 
     glEnable(GL_DEPTH_TEST);
 

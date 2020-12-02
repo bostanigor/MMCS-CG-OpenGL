@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <SOIL/SOIL.h>
+#include <cmath>
 
 #include "Car.h"
 
@@ -9,7 +10,6 @@ void Car::render() {
 
   float car_color[3]{25 / 255.0, 85 / 255.0, 250 / 255.0};
   float tire_color[3]{30 / 255.0, 30 / 255.0, 30 / 255.0};
-  float light_color[3]{250 / 255.0, 190 / 255.0, 60 / 255.0};
   float ambient[] = {0.5, 0.5, 0.5};
   float specular[] = {0.5, 0.5, 0.5};
   float emission[] = {0, 0, 0};
