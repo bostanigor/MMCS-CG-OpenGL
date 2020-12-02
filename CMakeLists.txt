@@ -3,7 +3,7 @@ project(untitledGL)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(untitledGL main.cpp)
+add_executable(untitledGL main.cpp Car.cpp Car.h)
 
 #absolute paths to freeglut
 #include_directories(/usr/local/Cellar/freeglut/3.2.1_1/include)
@@ -12,7 +12,8 @@ add_executable(untitledGL main.cpp)
 include_directories(/usr/local/include/)
 
 #freeglut
-target_link_libraries(untitledGL /usr/local/lib/libglut.dylib)
+target_link_libraries(untitledGL /usr/local/lib/libglut.dylib /usr/local/lib/libSOIL.dylib)
+
 #Apple's GLUT
 #target_link_libraries(untitledGL "-framework GLUT")
 

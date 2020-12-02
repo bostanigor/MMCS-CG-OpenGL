@@ -9,6 +9,8 @@
 #include <cmath>
 ///Apple's GLUT
 //#include <GLUT/glut.h>
+
+#include "Car.h"
 using namespace std;
 #define PI 3.1415
 
@@ -19,6 +21,8 @@ double rotate_z = 0;
 double tree_rotate;
 bool wire;
 bool ligth_toggle = false;
+
+auto car = Car();
 
 GLuint floorTexture, ballTexture;
 
@@ -38,31 +42,48 @@ void Reshape(int width, int height) {
     gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
 }
 
-void specialKeys(int key, int x, int y) {
-    switch (key) {
-        case GLUT_KEY_UP:
-            rotate_x += 5;
-            break;
-        case GLUT_KEY_DOWN:
-            rotate_x -= 5;
-            break;
-        case GLUT_KEY_RIGHT:
-            rotate_y += 5;
-            break;
-        case GLUT_KEY_LEFT:
-            rotate_y -= 5;
-            break;
-        case GLUT_KEY_PAGE_UP:
-            rotate_z += 5;
-            break;
-        case GLUT_KEY_PAGE_DOWN:
-            rotate_z -= 5;
-            break;
-        case GLUT_KEY_F1:
-            ligth_toggle = !ligth_toggle;
-            break;
-    }
-    glutPostRedisplay();
+void cameraKeys(unsigned char key, int x, int y) {
+  switch (key) {
+    case 'w':
+      rotate_x += 5;
+      break;
+    case 's':
+      rotate_x -= 5;
+      break;
+    case 'q':
+      rotate_y += 5;
+      break;
+    case 'e':
+      rotate_y -= 5;
+      break;
+    case 'a':
+      rotate_z += 5;
+      break;
+    case 'd':
+      rotate_z -= 5;
+      break;
+  }
+  glutPostRedisplay();
+}
+void carKeys(int key, int x, int y) {
+  switch (key) {
+    case GLUT_KEY_UP:
+      car.move(5);
+      break;
+    case GLUT_KEY_DOWN:
+      car.move(-5);
+      break;
+    case GLUT_KEY_RIGHT:
+      car.turn(2);
+      break;
+    case GLUT_KEY_LEFT:
+      car.turn(-2);
+      break;
+    case GLUT_KEY_F1:
+      car.lights_up = !car.lights_up;
+      break;
+  }
+  glutPostRedisplay();
 }
 
 void addCone(float diam, float h) {
@@ -213,8 +234,8 @@ void addTree() {
 }
 
 void loadTextures() {
-    floorTexture = SOIL_load_OGL_texture("floor_3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    ballTexture = SOIL_load_OGL_texture("glitter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    floorTexture = SOIL_load_OGL_texture("../assets/floor.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    ballTexture =  SOIL_load_OGL_texture("../assets/glitter.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 }
 
 void addFloor(int x, int y, int z, int size) {
@@ -305,71 +326,7 @@ void addStreet() {
 }
 
 void addCar() {
-    glPushMatrix();
-
-    float carCol[3]{ 25 / 255.0, 85 / 255.0, 250 / 255.0 };
-    float wheelCol[3]{ 30 / 255.0, 30 / 255.0, 30 / 255.0 };
-    float LightCol[3]{ 250 / 255.0, 190 / 255.0, 60 / 255.0 };
-
-    float mat_amb[] = { 0.5 , 0.5 , 0.5 };
-    float mat_spec[] = { 0.5 , 0.5 , 0.5 };
-    float mat_emmis[] = { 0 , 0 , 0 };
-    float shininess = 0.1 * 128;
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, carCol);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-
-    glTranslatef(250, 400, 50);
-
-    glRotatef(15, 0, 0, 1);
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, carCol);
-
-    glutSolidCube(50);
-    glTranslatef(50, 0, 0);
-    glutSolidCube(50);
-    glTranslatef(25, 0, 25);
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, wheelCol);
-
-    glTranslatef(-150, 30, -25);
-    glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(15, 15, 12, 1);
-    glRotatef(-90, 1, 0, 0);
-    glTranslatef(0, -45, 0);
-    glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(15, 15, 12, 1);
-    glRotatef(-90, 1, 0, 0);
-
-    glTranslatef(150, 45, 0);
-    glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(15, 15, 12, 1);
-    glRotatef(-90, 1, 0, 0);
-    glTranslatef(0, -45, 0);
-    glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(15, 15, 12, 1);
-    glRotatef(-90, 1, 0, 0);
-
-    if (ligth_toggle)
-    {
-        float new_mat_emmis[] = { 250 / 255.0, 190 / 255.0, 60 / 255.0 };
-        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new_mat_emmis);
-    }
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, LightCol);
-
-    glTranslatef(-175, 30, 40);
-    glutSolidSphere(10, 12, 12);
-    glTranslatef(0, -30, 0);
-    glutSolidSphere(10, 12, 12);
-
-    float new_mat_emmis[] = { 0, 0, 0 };
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new_mat_emmis);
-
-    glPopMatrix();
+  car.render();
 }
 
 void renderScene() {
@@ -429,7 +386,8 @@ int main(int argc, char **argv) {
     glutReshapeFunc(Reshape);
     glutDisplayFunc(renderScene);
     glutIdleFunc(Update);
-    glutSpecialFunc(specialKeys);
+    glutKeyboardFunc(cameraKeys);
+    glutSpecialFunc(carKeys);
     glutMainLoop();
 
     return 0;
