@@ -33,6 +33,22 @@ std::tuple<float, float, float> coordinates() {
     return std::make_tuple(m[0], m[5], m[10]);
 }
 
+void turnLights() {
+  if (lights) {
+    glDisable(GL_LIGHT3);
+    glDisable(GL_LIGHT4);
+    glDisable(GL_LIGHT5);
+    glDisable(GL_LIGHT6);
+  }
+  else {
+    glEnable(GL_LIGHT4);
+    glEnable(GL_LIGHT3);
+    glEnable(GL_LIGHT5);
+    glEnable(GL_LIGHT6);
+  }
+  lights = !lights;
+}
+
 void Reshape(int width, int height) {
     w = width;
     h = height;
@@ -81,10 +97,10 @@ void carKeys(int key, int x, int y) {
             car.turn(-2);
             break;
         case GLUT_KEY_F1:
-            car.lights_up = !car.lights_up;
+            car.turn_lights();
             break;
         case GLUT_KEY_F2:
-            lights = !lights;
+            turnLights();
     }
     glutPostRedisplay();
 }
@@ -277,7 +293,7 @@ void addFloor(int x, int y, int z, int size) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void addPole() {
+void addPole(GLenum light) {
     glPushMatrix();
 
     float mat_dif[] = {0.4, 0.4, 0.4};
@@ -297,6 +313,16 @@ void addPole() {
 
     if (lights) {
         float mat_emmis[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
+        const GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+        const GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+        const GLfloat position[] = { 0.0, 0.0, 0.0, 1.0};
+
+        glLightfv(light, GL_DIFFUSE, light_diffuse);
+        glLightfv(light, GL_SPECULAR, light_specular);
+        glLightfv(light, GL_POSITION, position);
+        glLightf(light, GL_CONSTANT_ATTENUATION, 0.0);
+        glLightf(light, GL_LINEAR_ATTENUATION, 0.05);
+        glLightf(light, GL_QUADRATIC_ATTENUATION, 0.0);
         glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
     }
 
@@ -320,13 +346,13 @@ void addPole() {
 
 void addPoles() {
     glTranslatef(160, 0, 0);
-    addPole();
+    addPole(GL_LIGHT3);
     glTranslatef(-320, 0, 0);
-    addPole();
+    addPole(GL_LIGHT4);
     glTranslatef(0, 320, 0);
-    addPole();
+    addPole(GL_LIGHT5);
     glTranslatef(320, 0, 0);
-    addPole();
+    addPole(GL_LIGHT6);
 }
 
 void addStreet() {
@@ -340,8 +366,14 @@ void addStreet() {
     glPopMatrix();
 }
 
-void addCar() {
-    car.render();
+void addSun() {
+  const GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+  const GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  const GLfloat direction[] = { 0.0, 0.0, 1.0, 0.0};
+
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glLightfv(GL_LIGHT0, GL_POSITION, direction);
 }
 
 void renderScene() {
@@ -356,21 +388,10 @@ void renderScene() {
     glTranslatef(0, 0, -75);
 
     addStreet();
-
     addTree();
+    car.render();
 
-    addCar();
-
-    glEnable(GL_LIGHTING);
-    GLfloat light0dir[] = {0, 0, -1};
-    GLfloat light0loc[] = {0, -100, 500, 0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light0loc);
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0dir);
-    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 100);
-
-    glColor3f(1, 1, 1);
-
-    glEnable(GL_LIGHT0);
+    addSun();
 
     glFlush();
     glutSwapBuffers();
@@ -393,16 +414,21 @@ int main(int argc, char **argv) {
     loadTextures();
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-    wire = 0;
     tree_rotation = 0;
 
     glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
 
     glutReshapeFunc(Reshape);
     glutDisplayFunc(renderScene);
     glutIdleFunc(Update);
     glutKeyboardFunc(cameraKeys);
     glutSpecialFunc(carKeys);
+
     glutMainLoop();
 
     return 0;

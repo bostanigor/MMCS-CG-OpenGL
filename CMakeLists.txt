@@ -9,13 +9,13 @@ add_executable(untitledGL main.cpp Car.cpp Car.h)
 #include_directories(/usr/local/Cellar/freeglut/3.2.1_1/include)
 #target_link_libraries(untitledGL /usr/local/Cellar/freeglut/3.2.1_1/lib/libglut.dylib)
 
-include_directories(/usr/include/)
+include_directories(/usr/local/include/)
 
 #freeglut
-target_link_libraries(untitledGL /usr/lib/libglut.so)
+target_link_libraries(untitledGL /usr/local/lib/libglut.dylib /usr/local/lib/libSOIL.dylib)
 
 #Apple's GLUT
 #target_link_libraries(untitledGL "-framework GLUT")
 
-target_link_libraries(untitledGL "-lglut -lGLU -lGL -lSOIL")
+target_link_libraries(untitledGL "-framework OpenGL")
 #find_package(OpenGL)
