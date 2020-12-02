@@ -145,19 +145,7 @@ void ball(double radius, double offset, bool tex = true) {
     }
 }
 
-void treeDecorations(double radius, double ballRadius, int ballCount) {
-    glPushMatrix();
-
-    double angle = 360.0 / ballCount;
-    for (int i = 0; i < ballCount; i++) {
-        ball(ballRadius, radius);
-        glRotatef(angle, 0.0, 0.0, 1.0);
-    }
-
-    glPopMatrix();
-}
-
-void addCycleOFBalls(double cycleRadius) {
+void ballsCycle(double cycleRadius) {
     float mat_dif[] = {1.0, 1.0, 1.0, 1.0};
     float mat_amb[] = {0.0, 0.0, 0.0, 1.0};
     float mat_spec[] = {0.1, 0.1, 0.1, 1.0};
@@ -176,88 +164,88 @@ void addCycleOFBalls(double cycleRadius) {
     }
 }
 
-void addTreeBalls() {
+void ballsToTree() {
     glTranslatef(0, 0, -75);
     glPushMatrix();
-    addCycleOFBalls(40);
+    ballsCycle(40);
     glPopMatrix();
 
     glTranslatef(0, 0, 50);
     glPushMatrix();
     glRotatef(120, 0.0, 0.0, 1.0);
-    addCycleOFBalls(32);
+    ballsCycle(32);
     glPopMatrix();
 
     glTranslatef(0, 0, 50);
     glPushMatrix();
     glRotatef(-120, 0.0, 0.0, 1.0);
-    addCycleOFBalls(23);
+    ballsCycle(23);
     glPopMatrix();
 }
 
-void addGarland(float off, float height) {
+void garland(float off, float height) {
     glPushMatrix();
 
-    float mat_dif[] = {0.0, 0.0, 1.0, 1.0};
-    float mat_amb[] = {0.0, 0.0, 1.0, 1.0};
-    float mat_spec[] = {1.0, 1.0, 1.0, 1.0};
+    float diffuse[] = {0.0, 0.0, 1.0, 1.0};
+    float ambient[] = {0.0, 0.0, 1.0, 1.0};
+    float specular[] = {1.0, 1.0, 1.0, 1.0};
     float shininess = 0.1 * 128;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-    float mat_emmis[] = {0.0, 0.0, 1.0, 1.0};
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
+    float emission[] = {0.0, 0.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
 
-    int cnt = 12;
-    float angle = 360 / (cnt * 1.0);
-    for (int i = 0; i < cnt; i++) {
+    int count = 12;
+    float angle = 360 / (count * 1.0);
+    for (int i = 0; i < count; i++) {
         ball(3, off, false);
         glRotatef(angle, 0.0, 0.0, 1.0);
     }
 
-    float new_mat_emmis[] = {0.0, 0.0, 0.0, 1.0};
+    float new_emission[] = {0.0, 0.0, 0.0, 1.0};
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new_mat_emmis);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new_emission);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     glPopMatrix();
 }
 
-void addTree() {
+void christmasTree() {
     glPushMatrix();
     glRotatef(tree_rotation, 0.0, 0.0, 1.0);
 
-    float mat_amb[] = {0.5, 0.5, 0.5};
-    float mat_dif[] = {0.5, 0.5, 0.5};
-    float mat_spec[] = {1, 1, 1};
+    float ambient[] = {0.5, 0.5, 0.5};
+    float diffuse[] = {0.5, 0.5, 0.5};
+    float specular[] = {1, 1, 1};
     float shininess = 1 * 128;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     glutSolidCylinder(10, 25, 150, 1);
 
     glTranslatef(0, 0, 25);
     cone(70, 100);
-    addGarland(50, 100);
+    garland(50, 100);
 
     glTranslatef(0, 0, 50);
     cone(60, 80);
-    addGarland(45, 90);
+    garland(45, 90);
 
     glTranslatef(0, 0, 50);
     cone(50, 60);
-    addGarland(35, 70);
+    garland(35, 70);
 
-    addTreeBalls();
+    ballsToTree();
 
     glTranslatef(0, 0, 45);
     glPopMatrix();
@@ -296,14 +284,14 @@ void addFloor(int x, int y, int z, int size) {
 void addPole(GLenum light) {
     glPushMatrix();
 
-    float mat_dif[] = {0.4, 0.4, 0.4};
-    float mat_amb[] = {0.3, 0.3, 0.23};
-    float mat_spec[] = {1, 1, 1};
+    float diffuse[] = {0.4, 0.4, 0.4};
+    float ambient[] = {0.3, 0.3, 0.23};
+    float specular[] = {1, 1, 1};
     float shininess = 0.1 * 128;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     glColor3f(0.4, 0.4, 0.4); // ЦВЕТ СТОЛБА
@@ -312,7 +300,7 @@ void addPole(GLenum light) {
     glTranslatef(0, 0, 150);
 
     if (lights) {
-        float mat_emmis[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
+        float emission[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
         const GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
         const GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
         const GLfloat position[] = { 0.0, 0.0, 0.0, 1.0};
@@ -323,12 +311,12 @@ void addPole(GLenum light) {
         glLightf(light, GL_CONSTANT_ATTENUATION, 0.0);
         glLightf(light, GL_LINEAR_ATTENUATION, 0.05);
         glLightf(light, GL_QUADRATIC_ATTENUATION, 0.0);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
     }
 
-    float new_mat_dif_1[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
+    float new_diffuse[] = {250 / 255.0, 255 / 255.0, 150 / 255.0};
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new_mat_dif_1);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new_diffuse);
 
     glutSolidSphere(8, 10, 10);
     glTranslatef(0, 0, 25);
@@ -338,8 +326,8 @@ void addPole(GLenum light) {
     float mat_emmis[] = {0, 0, 0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
 
-    float new_mat_dif_2[] = {0.4, 0.4, 0.4};
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new_mat_dif_2);
+    float new_diffuse2[] = {0.4, 0.4, 0.4};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new_diffuse2);
 
     glPopMatrix();
 }
@@ -388,7 +376,7 @@ void renderScene() {
     glTranslatef(0, 0, -75);
 
     addStreet();
-    addTree();
+    christmasTree();
     car.render();
 
     addSun();
