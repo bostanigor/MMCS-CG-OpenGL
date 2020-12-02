@@ -307,10 +307,9 @@ void addStreet() {
 void addCar() {
     glPushMatrix();
 
-    float carCol[3]{ 255 / 255.0, 0 / 255.0, 0 / 255.0 };  // КОРПУС
-//    float glassCol[3]{ 120 / 255.0, 120 / 255.0, 120 / 255.0 }; // СТЕКЛО
-    float wheelCol[3]{ 30 / 255.0, 30 / 255.0, 30 / 255.0 }; // КОЛЁСА
-    float LightCol[3]{ 250 / 255.0, 190 / 255.0, 60 / 255.0 }; // ФАРЫ
+    float carCol[3]{ 25 / 255.0, 85 / 255.0, 250 / 255.0 };
+    float wheelCol[3]{ 30 / 255.0, 30 / 255.0, 30 / 255.0 };
+    float LightCol[3]{ 250 / 255.0, 190 / 255.0, 60 / 255.0 };
 
     float mat_amb[] = { 0.5 , 0.5 , 0.5 };
     float mat_spec[] = { 0.5 , 0.5 , 0.5 };
@@ -323,53 +322,35 @@ void addCar() {
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emmis);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-    glTranslatef(250, 400, 50); // СМЕЩЕНИЕ МАШИНЫ
+    glTranslatef(250, 400, 50);
 
-    glRotatef(15, 0, 0, 1); // ПОВОРОТ МАШИНЫ
+    glRotatef(15, 0, 0, 1);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, carCol);
 
     glutSolidCube(50);
     glTranslatef(50, 0, 0);
     glutSolidCube(50);
     glTranslatef(25, 0, 25);
 
-
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, glassCol);
-
-    glRotatef(45, 0, 1, 0);
-    glutSolidCube(48);
-    glRotatef(-45, 0, 1, 0);
-    glTranslatef(50, 0, 0);
-    glRotatef(45, 0, 1, 0);
-    glutSolidCube(48);
-    glRotatef(-45, 0, 1, 0);
-    glTranslatef(-25, 0, 12);
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, carCol);
-
-    glutSolidCube(49);
-    glTranslatef(0, 0, -37);
-    glutSolidCube(50);
-    glTranslatef(50, 0, 0);
-    glutSolidCube(50);
-
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, wheelCol);
 
     glTranslatef(-150, 30, -25);
     glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(25, 15, 12, 1);
+    glutSolidCylinder(15, 15, 12, 1);
     glRotatef(-90, 1, 0, 0);
     glTranslatef(0, -45, 0);
     glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(25, 15, 12, 1);
+    glutSolidCylinder(15, 15, 12, 1);
     glRotatef(-90, 1, 0, 0);
 
     glTranslatef(150, 45, 0);
     glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(25, 15, 12, 1);
+    glutSolidCylinder(15, 15, 12, 1);
     glRotatef(-90, 1, 0, 0);
     glTranslatef(0, -45, 0);
     glRotatef(90, 1, 0, 0);
-    glutSolidCylinder(25, 15, 12, 1);
+    glutSolidCylinder(15, 15, 12, 1);
     glRotatef(-90, 1, 0, 0);
 
     if (ligth_toggle)
