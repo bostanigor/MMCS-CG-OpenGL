@@ -1,7 +1,6 @@
 #ifndef UNTITLEDGL_CAR_H
 #define UNTITLEDGL_CAR_H
 
-
 class Car {
   double pos_x = 150.0, pos_y = 200.0;
   double angle_z = 150.0;

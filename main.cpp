@@ -11,6 +11,7 @@
 //#include <GLUT/glut.h>
 
 #include "Car.h"
+#include "ChristmasTree.h"
 
 using namespace std;
 #define PI 3.1415
@@ -23,6 +24,7 @@ double tree_rotation;
 bool lights = false;
 
 auto car = Car();
+auto tree = ChristmasTree();
 
 GLuint floorTexture, ballTexture;
 
@@ -214,37 +216,7 @@ void addGarland(float off, float height) {
 }
 
 void addTree() {
-    glPushMatrix();
-    glRotatef(tree_rotation, 0.0, 0.0, 1.0);
-
-    float mat_amb[] = {0.5, 0.5, 0.5};
-    float mat_dif[] = {0.5, 0.5, 0.5};
-    float mat_spec[] = {1, 1, 1};
-    float shininess = 1 * 128;
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spec);
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-
-    glutSolidCylinder(10, 25, 150, 1);
-
-    glTranslatef(0, 0, 25);
-    cone(70, 100);
-    addGarland(50, 100);
-
-    glTranslatef(0, 0, 50);
-    cone(60, 80);
-    addGarland(45, 90);
-
-    glTranslatef(0, 0, 50);
-    cone(50, 60);
-    addGarland(35, 70);
-
-    addTreeBalls();
-
-    glTranslatef(0, 0, 45);
-    glPopMatrix();
+    tree.render();
 }
 
 void loadTextures() {
@@ -392,9 +364,6 @@ int main(int argc, char **argv) {
 
     loadTextures();
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-    wire = 0;
-    tree_rotation = 0;
 
     glEnable(GL_DEPTH_TEST);
 
