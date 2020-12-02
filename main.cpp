@@ -123,7 +123,7 @@ void ball(double radius, double offset, bool tex = true) {
     if (tex) {
         GLUquadricObj *quadObj;
         quadObj = gluNewQuadric();
-
+        glBindTexture(GL_TEXTURE_2D, ballTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
