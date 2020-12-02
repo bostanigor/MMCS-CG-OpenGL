@@ -12,7 +12,7 @@ add_executable(untitledGL main.cpp)
 include_directories(/usr/local/include/)
 
 #freeglut
-target_link_libraries(untitledGL /usr/local/lib/libglut.dylib)
+target_link_libraries(untitledGL /usr/local/lib/libglut.dylib /usr/local/lib/libSOIL.dylib)
 #Apple's GLUT
 #target_link_libraries(untitledGL "-framework GLUT")
 
