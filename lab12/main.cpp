@@ -5,7 +5,6 @@
 ///Freeglut
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <SOIL/SOIL.h>
 #include <cmath>
 
 using namespace std;
@@ -53,11 +52,17 @@ void Init() {
     setPerspective();
 }
 
+void InitWindowSize() {
+    w = 800;
+    h = 600;
+    glutInitWindowSize(w, h);
+}
+
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
 
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(600, 600);
+    InitWindowSize();
     glutCreateWindow("Lab 12");
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
