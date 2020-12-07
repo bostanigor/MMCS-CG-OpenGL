@@ -14,69 +14,68 @@ using namespace std;
 static int w = 0, h = 0;
 
 void Reshape(int width, int height) {
-  w = width;
-  h = height;
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+    w = width;
+    h = height;
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
 }
 
 void setPerspective() {
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
-  glutPostRedisplay();
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+    glutPostRedisplay();
 }
 
-float angle = 0.0;
+float Angle = 0.0;
+
 void renderTeapot() {
-  setPerspective();
-  glMatrixMode(GL_MODELVIEW);
-//  angle += 0.05f;
-  glClear(GL_COLOR_BUFFER_BIT);
-  glLoadIdentity();
+    setPerspective();
+    glMatrixMode(GL_MODELVIEW);
+    Angle += 0.05f;
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
+    glLoadIdentity();
 
-  gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-  glRotatef(angle, 0.0f, 1.0f, 0.0f);
+    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(Angle, 0.0f, 1.0f, 0.0f);
 
-  glColor3f(1.0, 1.0, 1.0);
-  glutWireTeapot(50.0f);
-  glFlush();
+    glutWireTeapot(50.0f);
+    glFlush();
 
-  glutSwapBuffers();
+    glutSwapBuffers();
 }
 
 void Update() {
-  renderTeapot();
+    renderTeapot();
 }
 
 void Init() {
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 int main(int argc, char **argv) {
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-  glutInitWindowPosition(100, 100);
-  glutInitWindowSize(600, 600);
-  glutCreateWindow("Lab 12");
+    glutInit(&argc, argv);
 
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(600, 600);
+    glutCreateWindow("Lab 12");
 
-  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    Init();
 
-  glEnable(GL_DEPTH_TEST);
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-  glutReshapeFunc(Reshape);
-  glutDisplayFunc(renderTeapot);
-//  glutIdleFunc(Update);
-  Init();
+    glutReshapeFunc(Reshape);
+    glutDisplayFunc(Update);
+    glutIdleFunc(Update);
 //  glutKeyboardFunc(cameraKeys);
 //  glutSpecialFunc(carKeys);
 
-  glutMainLoop();
+    glutMainLoop();
 
-  return 0;
+    return 0;
 }
