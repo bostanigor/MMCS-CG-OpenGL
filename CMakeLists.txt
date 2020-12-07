@@ -1,21 +1,26 @@
-cmake_minimum_required(VERSION 3.15)
-project(untitledGL)
+cmake_minimum_required(VERSION 3.17)
+project(OpenGLabs)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
-add_executable(untitledGL main.cpp Car.cpp Car.h)
+add_executable(lab11 lab11/main.cpp
+        lab11/Car.cpp
+        lab11/Car.h
+        )
 
-#absolute paths to freeglut
-#include_directories(/usr/local/Cellar/freeglut/3.2.1_1/include)
-#target_link_libraries(untitledGL /usr/local/Cellar/freeglut/3.2.1_1/lib/libglut.dylib)
+add_executable(lab12 lab12/main.cpp
+        )
 
-include_directories(/usr/local/include/)
+# CHANGE THIS PATH TO YOURS
+set(OPENGL_DIRS D:/MyLibraries/gl/)
 
-#freeglut
-target_link_libraries(untitledGL /usr/local/lib/libglut.dylib /usr/local/lib/libSOIL.dylib)
+set(FREEGLUT_DIRS ${OPENGL_DIRS}/freeglut/)
+set(GLEW_DIRS ${OPENGL_DIRS}/glew-1.11.0/)
 
-#Apple's GLUT
-#target_link_libraries(untitledGL "-framework GLUT")
+include_directories(lab12 ${FREEGLUT_DIRS}/include/)
+include_directories(lab12 ${GLEW_DIRS}/include/)
 
-target_link_libraries(untitledGL "-framework OpenGL")
-#find_package(OpenGL)
+set(LIBS_DIRS ${FREEGLUT_DIRS}/lib/freeglut.lib ${GLEW_DIRS}/lib/glew32.lib)
+
+# ADD SIMILAR LINES WHEN CREATING NEW EXECUTABLE
+target_link_libraries (lab12 ${LIBS_DIRS})
