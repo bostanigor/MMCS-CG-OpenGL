@@ -13,27 +13,21 @@ using namespace std;
 
 static int w = 0, h = 0;
 
-void Reshape(int width, int height) {
-    w = width;
-    h = height;
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
-}
-
 void setPerspective() {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
-    glutPostRedisplay();
+}
+
+void Reshape(int width, int height) {
+  w = width;
+  h = height;
 }
 
 float Angle = 0.0;
 
 void renderTeapot() {
-    setPerspective();
     glMatrixMode(GL_MODELVIEW);
     Angle += 0.05f;
     glClear(GL_COLOR_BUFFER_BIT);
@@ -51,10 +45,12 @@ void renderTeapot() {
 
 void Update() {
     renderTeapot();
+    glutPostRedisplay();
 }
 
 void Init() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    setPerspective();
 }
 
 int main(int argc, char **argv) {
@@ -71,7 +67,7 @@ int main(int argc, char **argv) {
 
     glutReshapeFunc(Reshape);
     glutDisplayFunc(Update);
-    glutIdleFunc(Update);
+//    glutIdleFunc(Update);
 //  glutKeyboardFunc(cameraKeys);
 //  glutSpecialFunc(carKeys);
 
