@@ -3,7 +3,7 @@
 
 #define GL_SILENCE_DEPRECATION
 ///Freeglut
-#include <GL/glew.h>
+#include <GL/glew32.h>
 #include <GL/freeglut.h>
 #include <cmath>
 

@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(lab11 lab11/main.cpp
         lab11/Car.cpp
         lab11/Car.h
-        )
+         "lab12/firstShaders.cpp")
 
 add_executable(lab12 lab12/main.cpp
-        )
+         "lab12/firstShaders.cpp")
 
 # CHANGE THIS PATH TO YOURS
 set(OPENGL_DIRS D:/MyLibraries/gl/)
