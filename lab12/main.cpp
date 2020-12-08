@@ -5,7 +5,46 @@
 
 task1 *t1;
 
-void task1update() { t1->update(); }
+int activeTask = 1;
+int currentShaderProgram;
+bool shadersActive = true;
+
+
+void update() {
+    switch(activeTask) {
+        case 1: t1->update(); break;
+        default: break;
+    }
+}
+
+void specialKeys(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_F1:
+            activeTask = 1;
+            currentShaderProgram = t1->getProgram();
+            break;
+        case GLUT_KEY_F2:
+            activeTask = 2;
+            break;
+        case GLUT_KEY_F3:
+            activeTask = 3;
+            break;
+        case GLUT_KEY_F4:
+            activeTask = 4;
+            break;
+        case GLUT_KEY_F5:
+            activeTask = 5;
+            break;
+        case GLUT_KEY_F6:
+            if (shadersActive)
+                glUseProgram(0);
+            else
+                glUseProgram(currentShaderProgram);
+            shadersActive = !shadersActive;
+            break;
+    }
+    glutPostRedisplay();
+}
 
 //! Освобождение шейдеров
 void freeShader()
@@ -13,11 +52,15 @@ void freeShader()
 //! Передавая ноль, мы отключаем шейдрную программу
     glUseProgram(0);
 //! Удаляем шейдерную программу
-//    glDeleteProgram(t1.getProgram());
+    glDeleteProgram(t1->getProgram());
 }
 void resizeWindow(int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void initTasks() {
+    t1 = new task1();
 }
 
 int main(int argc, char **argv)
@@ -43,11 +86,11 @@ int main(int argc, char **argv)
         return 1;
     }
     //! Инициализация шейдеров
-    t1 = new task1();
-//    initShader();
+    initTasks();
     glutReshapeFunc(resizeWindow);
-    glutDisplayFunc(task1update);
-    glutIdleFunc(task1update);
+    glutDisplayFunc(update);
+    glutIdleFunc(update);
+    glutSpecialFunc(specialKeys);
     glutMainLoop();
     //! Освобождение ресурсов
     freeShader();

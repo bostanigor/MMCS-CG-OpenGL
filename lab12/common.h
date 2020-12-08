@@ -87,7 +87,7 @@ GLint initShaderProgram(const std::string &vsPath, const std::string &fsPath)
 
     return program;
 
-    checkOpenGLerror();
+//    checkOpenGLerror();
 }
 
 #endif //OPENGLABS_COMMON_H

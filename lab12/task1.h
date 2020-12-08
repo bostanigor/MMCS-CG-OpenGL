@@ -15,6 +15,11 @@ public:
                                     "../shaders/color_fragment.fs.c");
         uniformAngle = getUniformId("angle", program);
         angleVal = 0.0;
+        glUseProgram(program);
+    }
+
+    void enableShaders() const {
+        glUseProgram(program);
     }
 
     void update() {
@@ -28,9 +33,6 @@ public:
 
     void render() const {
         glClear(GL_COLOR_BUFFER_BIT);
-        //! Устанавливаем шейдерную программу текущей
-        glUseProgram(program);
-        static float red[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
         //! Передаем юниформ в шейдер
         glUniform1f(uniformAngle, angleVal);
 
@@ -41,9 +43,7 @@ public:
         glEnd();
 
         glFlush();
-        //! Отключаем шейдерную программу
-        glUseProgram(0);
-        checkOpenGLerror();
+//        checkOpenGLerror();
 
         glutSwapBuffers();
     }
