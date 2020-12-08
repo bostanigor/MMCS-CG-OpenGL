@@ -5,6 +5,7 @@
 #include "task2.h"
 #include "task3.h"
 #include "task4.h"
+#include "task5.h"
 
 auto tasks = new task*[5];
 task * currentTask;
@@ -59,7 +60,8 @@ void initTasks() {
     tasks[0] = new task1();
     tasks[1] = new task2();
     tasks[2] = new task3();
-    tasks[3] = new task5();
+    tasks[3] = new task4();
+    tasks[4] = new task5();
     currentTask = tasks[0];
     currentShader = currentTask->getProgram();
     glUseProgram(currentShader);

@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 
-//! Проверка ошибок OpenGL, если есть то вывод в консоль тип ошибки
+//! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ OpenGL, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 void checkOpenGLerror()
 {
     GLenum errCode;
@@ -50,36 +50,36 @@ GLint getUniformId(const std::string &uniformName, GLint program) {
     return result;
 }
 
-//! Инициализация шейдеров
+//! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 GLint initShaderProgram(const std::string &vsPath, const std::string &fsPath)
 {
-    //! Исходный код шейдеров
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     auto vsSourceCode = readFile(vsPath);
     auto fsSourceCode = readFile(fsPath);
     const char* vsSource = vsSourceCode.c_str();
     const char* fsSource = fsSourceCode.c_str();
 
-    //! Переменные для хранения идентификаторов шейдеров
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     GLuint vShader, fShader;
-    //! Создаем вершинный шейдер
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     vShader = glCreateShader(GL_VERTEX_SHADER);
-    //! Передаем исходный код
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
     glShaderSource(vShader, 1, &vsSource, NULL);
-    //! Компилируем шейдер
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     glCompileShader(vShader);
-    //! Создаем фрагментный шейдер
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    //! Передаем исходный код
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
     glShaderSource(fShader, 1, &fsSource, NULL);
-    //! Компилируем шейдер
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     glCompileShader(fShader);
-    //! Создаем программу и прикрепляем шейдеры к ней
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
     auto program = glCreateProgram();
     glAttachShader(program, vShader);
     glAttachShader(program, fShader);
-    //! Линкуем шейдерную программу
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     glLinkProgram(program);
-    //! Проверяем статус сборки
+    //! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     int link_ok;
     glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
     if (!link_ok)
@@ -101,6 +101,13 @@ public:
 
     virtual void update() = 0;
     virtual void render() const = 0;
+};
+
+struct vertex
+{
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
 };
 
 #endif //OPENGLABS_COMMON_H

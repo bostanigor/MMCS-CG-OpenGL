@@ -1,7 +1,7 @@
 #ifndef OPENGLABS_TASK4_H
 #define OPENGLABS_TASK4_H
 
-class task5 : public task {
+class task4 : public task {
     GLuint uniformAngle;
 
     double rotate_x = 0;
@@ -9,7 +9,7 @@ class task5 : public task {
     double rotate_z = 0;
 
 public:
-    task5() {
+    task4() {
         program = initShaderProgram("../shaders/cube.vs.c",
                                     "../shaders/cube.fs.c");
 
@@ -29,6 +29,7 @@ public:
         glEnable(GL_DEPTH_TEST);
 
         glLoadIdentity();
+        glUseProgram(program);
         double pi = 3.1415926535897932;
 
         glUniform3f(uniformAngle,
@@ -92,6 +93,7 @@ public:
             glVertex3f(-0.5, 0.5, 0.5);
         glEnd();
 
+        glUseProgram(0);
         checkOpenGLerror();
         glFlush();
         glutSwapBuffers();
