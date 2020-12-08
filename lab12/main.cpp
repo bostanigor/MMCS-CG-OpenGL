@@ -17,10 +17,13 @@ void update() {
 
 void specialKeys(int key, int x, int y) {
     auto offset = key - GLUT_KEY_F1;
+
+    //! Если нажали F1-F5 - переключаем задачу
     if (offset >= 0 && offset < 5) {
         currentTask = tasks[offset];
         currentShader = currentTask->getProgram();
     }
+    //! Если нажали F6 - вырубаем шейдер
     else if (offset == 5)
         shadersActive = !shadersActive;
 
@@ -35,9 +38,9 @@ void specialKeys(int key, int x, int y) {
 //! Освобождение шейдеров
 void freeShaders()
 {
-//! Передавая ноль, мы отключаем шейдрную программу
+    //! Передавая ноль, мы отключаем шейдрную программу
     glUseProgram(0);
-//! Удаляем шейдерную программу
+    //! Удаляем шейдерную программу
     for (int i = 0; i < 5; i++) {
         glDeleteProgram(tasks[i]->getProgram());
     }
