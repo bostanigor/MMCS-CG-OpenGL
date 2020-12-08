@@ -15,6 +15,10 @@ void update() {
     currentTask->update();
 }
 
+void render() {
+    currentTask->render();
+}
+
 void specialKeys(int key, int x, int y) {
     auto offset = key - GLUT_KEY_F1;
 
@@ -84,7 +88,7 @@ int main(int argc, char **argv)
     //! Инициализация шейдеров
     initTasks();
     glutReshapeFunc(resizeWindow);
-    glutDisplayFunc(update);
+    glutDisplayFunc(render);
     glutIdleFunc(update);
     glutSpecialFunc(specialKeys);
     glutMainLoop();
