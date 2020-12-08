@@ -29,7 +29,6 @@ public:
         glEnable(GL_DEPTH_TEST);
 
         glLoadIdentity();
-        glUseProgram(program);
         double pi = 3.1415926535897932;
 
         glUniform3f(uniformAngle,
@@ -93,7 +92,6 @@ public:
             glVertex3f(-0.5, 0.5, 0.5);
         glEnd();
 
-        glUseProgram(0);
         checkOpenGLerror();
         glFlush();
         glutSwapBuffers();

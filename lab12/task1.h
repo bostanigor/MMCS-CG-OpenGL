@@ -29,9 +29,9 @@ public:
         glUniform1f(uniformAngle, angleVal);
 
         glBegin(GL_TRIANGLES);
-            glColor3f(1.0, 0.0, 0.0); glVertex3f(-0.5f, -0.5f, 0.0f);
-            glColor3f(0.0, 1.0, 0.0); glVertex3f(-0.5f, 0.5f, 0.0f);
-            glColor3f(0.0, 0.0, 1.0); glVertex3f(0.5f, 0.5f, 0.0f);
+            glColor3f(1.0, 0.0, 0.0); glVertex2f(-0.5f, -0.5f);
+            glColor3f(0.0, 1.0, 0.0); glVertex2f(-0.5f, 0.5f);
+            glColor3f(0.0, 0.0, 1.0); glVertex2f(0.5f, 0.5f);
         glEnd();
 
         glFlush();

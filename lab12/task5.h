@@ -35,7 +35,6 @@ public:
         glClearDepth(1.0f);
         glEnable(GL_DEPTH_TEST);
 
-        glUseProgram(program);
         double pi = 3.1415926535897932;
         glUniform3f(uniformAngle,
                     (GLfloat)(rotate_x * pi / 180),
@@ -55,7 +54,6 @@ public:
         glDisableVertexAttribArray(attrib_vertex);
         glDisableVertexAttribArray(attrib_vertex_color);
 
-        glUseProgram(0);
         checkOpenGLerror();
         glutSwapBuffers();
     }
