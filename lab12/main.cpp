@@ -2,57 +2,45 @@
 #include "GL/freeglut.h"
 #include "common.h"
 #include "task1.h"
+#include "task2.h"
+#include "task3.h"
 
-task1 *t1;
+auto tasks = new task*[5];
+task * currentTask;
+GLuint currentShader;
 
-int activeTask = 1;
-int currentShaderProgram;
 bool shadersActive = true;
 
-
 void update() {
-    switch(activeTask) {
-        case 1: t1->update(); break;
-        default: break;
-    }
+    currentTask->update();
 }
 
 void specialKeys(int key, int x, int y) {
-    switch (key) {
-        case GLUT_KEY_F1:
-            activeTask = 1;
-            currentShaderProgram = t1->getProgram();
-            break;
-        case GLUT_KEY_F2:
-            activeTask = 2;
-            break;
-        case GLUT_KEY_F3:
-            activeTask = 3;
-            break;
-        case GLUT_KEY_F4:
-            activeTask = 4;
-            break;
-        case GLUT_KEY_F5:
-            activeTask = 5;
-            break;
-        case GLUT_KEY_F6:
-            if (shadersActive)
-                glUseProgram(0);
-            else
-                glUseProgram(currentShaderProgram);
-            shadersActive = !shadersActive;
-            break;
+    auto offset = key - GLUT_KEY_F1;
+    if (offset >= 0 && offset < 5) {
+        currentTask = tasks[offset];
+        currentShader = currentTask->getProgram();
     }
+    else if (offset == 5)
+        shadersActive = !shadersActive;
+
+    if (shadersActive)
+        glUseProgram(currentShader);
+    else
+        glUseProgram(0);
+
     glutPostRedisplay();
 }
 
 //! Освобождение шейдеров
-void freeShader()
+void freeShaders()
 {
 //! Передавая ноль, мы отключаем шейдрную программу
     glUseProgram(0);
 //! Удаляем шейдерную программу
-    glDeleteProgram(t1->getProgram());
+    for (int i = 0; i < 5; i++) {
+        glDeleteProgram(tasks[i]->getProgram());
+    }
 }
 void resizeWindow(int width, int height)
 {
@@ -60,7 +48,12 @@ void resizeWindow(int width, int height)
 }
 
 void initTasks() {
-    t1 = new task1();
+    tasks[0] = new task1();
+    tasks[1] = new task2();
+    tasks[2] = new task3();
+    currentTask = tasks[0];
+    currentShader = currentTask->getProgram();
+    glUseProgram(currentShader);
 }
 
 int main(int argc, char **argv)
@@ -93,5 +86,5 @@ int main(int argc, char **argv)
     glutSpecialFunc(specialKeys);
     glutMainLoop();
     //! Освобождение ресурсов
-    freeShader();
+    freeShaders();
 }

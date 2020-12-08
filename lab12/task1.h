@@ -1,10 +1,11 @@
+#ifndef OPENGLABS_TASK1_H
+#define OPENGLABS_TASK1_H
+
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "common.h"
 
-class task1 {
-    GLuint program;
-
+class task1 : public task {
     GLuint uniformAngle;
 
     float angleVal;
@@ -14,24 +15,15 @@ public:
         program = initShaderProgram("../shaders/rotate_vertices_x.vs.c",
                                     "../shaders/color_fragment.fs.c");
         uniformAngle = getUniformId("angle", program);
-        angleVal = 0.0;
-        glUseProgram(program);
+        angleVal = 0.0f;
     }
 
-    void enableShaders() const {
-        glUseProgram(program);
-    }
-
-    void update() {
+    void update() override {
         angleVal += 0.1;
         render();
     }
 
-    GLuint getProgram() const {
-        return program;
-    }
-
-    void render() const {
+    void render() const override {
         glClear(GL_COLOR_BUFFER_BIT);
         //! Передаем юниформ в шейдер
         glUniform1f(uniformAngle, angleVal);
@@ -43,8 +35,9 @@ public:
         glEnd();
 
         glFlush();
-//        checkOpenGLerror();
 
         glutSwapBuffers();
     }
 };
+
+#endif //OPENGLABS_TASK1_H

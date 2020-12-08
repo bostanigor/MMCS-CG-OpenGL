@@ -8,7 +8,7 @@ add_executable(lab11 lab11/main.cpp
         lab11/Car.h
         )
 
-add_executable(lab12 lab12/main.cpp lab12/task1.h lab12/common.h)
+add_executable(lab12 lab12/main.cpp lab12/task1.h lab12/common.h lab12/task2.h)
 
 # MAIN PATHS AND LIBS
 set(OPENGL_DIRS D:/MyLibraries/gl/)

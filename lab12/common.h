@@ -90,4 +90,17 @@ GLint initShaderProgram(const std::string &vsPath, const std::string &fsPath)
 //    checkOpenGLerror();
 }
 
+class task {
+protected:
+    GLuint program;
+
+public:
+    GLuint getProgram() const {
+        return program;
+    }
+
+    virtual void update() = 0;
+    virtual void render() const = 0;
+};
+
 #endif //OPENGLABS_COMMON_H
