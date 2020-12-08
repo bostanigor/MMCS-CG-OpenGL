@@ -23,6 +23,7 @@ public:
 
     void render() const override {
         glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
         static float color1[4] = { 1.0f, 0.0f, 1.0f, 1.0f };
         static float color2[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
 

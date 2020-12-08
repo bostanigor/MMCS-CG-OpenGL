@@ -25,6 +25,7 @@ public:
 
     void render() const override {
         glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
         //! Передаем юниформ в шейдер
         glUniform1f(uniformAngle, angleVal);
 
