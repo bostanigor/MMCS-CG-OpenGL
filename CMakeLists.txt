@@ -9,6 +9,7 @@ add_executable(lab11 lab11/main.cpp
         )
 
 add_executable(lab12 lab12/main.cpp lab12/task1.h lab12/common.h lab12/task2.h)
+add_executable(lab13 lab13/main.cpp)
 
 # MAIN PATHS AND LIBS
 set(OPENGL_DIRS D:/MyLibraries/gl/)
@@ -28,3 +29,4 @@ set(SOIL2_LIB ${SOIL2_DIR}/lib/SOIL.lib)
 # ADD SIMILAR LINES WHEN CREATING NEW EXECUTABLE
 target_link_libraries (lab11 ${LIBS_DIRS} ${SOIL2_LIB})
 target_link_libraries (lab12 ${LIBS_DIRS})
+target_link_libraries (lab13 ${LIBS_DIRS})
