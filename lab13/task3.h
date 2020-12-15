@@ -20,7 +20,7 @@ public:
         program = initShaderProgram("../shaders/lab13/cube_textured.vs.c",
                                     "../shaders/lab13/cube_textured_mix_color.fs.c");
         int width, height, nrChannels;
-        unsigned char *data = stbi_load("../assets/floor.jpg", &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load("../assets/glitter.jpg", &width, &height, &nrChannels, 0);
 
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
