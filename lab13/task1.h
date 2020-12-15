@@ -21,9 +21,11 @@ class task1 : public task {
 public:
     task1() {
         program = initShaderProgram("../shaders/lab13/cube_textured.vs.c",
-                                    "../shaders/lab13/cube_textured_mix_color.fs.c");
+                                    "../shaders/lab13/cube_textured.fs.c");
         int width, height, nrChannels;
-        unsigned char *data = stbi_load("../assets/glitter.jpg", &width, &height, &nrChannels, 0);
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *data = stbi_load("../assets/earth-texture.jpg", &width, &height, &nrChannels, 0);
+
 
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -37,24 +39,32 @@ public:
     }
 
     void update() override {
-        rotate_x += 0.1;
-        rotate_y += 0.1;
-        rotate_z += 0.1;
+        rotate_z += 1.0;
+        rotate_x += 1.0;
+//        rotate_z += 0.1;
         render();
     }
 
     void initVBO() {
         float vertices[] = {
                 // coordinates          colors              tex coords
-                -0.5f, -0.5f, 0.5f,     1.0f, 0.0f, 0.0f,   1.0f, 1.0,
-                -0.5f,  0.5f, 0.5f,     0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-                 0.5f,  0.5f, 0.5f,     0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-                 0.5f, -0.5f, 0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f,     1.0f, 0.0f, 0.0f,   0.34f, 0.51f,  // 0
+                -0.5f,  0.5f, 0.5f,     0.0f, 1.0f, 0.0f,   0.34f, 0.74f,  // 1
+                 0.5f,  0.5f, 0.5f,     0.0f, 0.0f, 1.0f,   0.66f, 0.74f,  // 2
+                 0.5f, -0.5f, 0.5f,     1.0f, 1.0f, 1.0f,   0.66f, 0.51f,  // 3
 
-                -0.5f, -0.5f, -0.5f,     1.0f, 0.0f, 0.0f,   0.0f, 0.0,
-                -0.5f,  0.5f, -0.5f,     0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,     0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,     1.0f, 0.0f, 0.0f,   0.34f, 0.25f, // 4
+                -0.5f,  0.5f, -0.5f,     0.0f, 1.0f, 0.0f,   0.34f, 0.0f,  // 5
+                 0.5f,  0.5f, -0.5f,     0.0f, 0.0f, 1.0f,   0.66f, 0.0f,  // 6
+                 0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.66f, 0.25f, // 7
+
+                -0.5f, -0.5f, -0.5f,     1.0f, 0.0f, 0.0f,   0.0f, 0.51f, // 8(4)
+                -0.5f,  0.5f, -0.5f,     0.0f, 1.0f, 0.0f,   0.0f, 0.74f, // 9(5)
+                 0.5f,  0.5f, -0.5f,     0.0f, 0.0f, 1.0f,   1.0f, 0.74f, // 10(6)
+                 0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.51f, // 11(7)
+
+                -0.5f,  0.5f, -0.5f,     0.0f, 1.0f, 0.0f,   0.34f, 1.0f, // 12(5)
+                0.5f,  0.5f, -0.5f,      0.0f, 0.0f, 1.0f,   0.66f, 1.0f, // 13(6)
         };
 
         glGenBuffers(1, &VBO);
@@ -78,18 +88,12 @@ public:
 
     void initEBO() {
         unsigned int indices[] = {  // note that we start from 0!
-                /*0, 1, 2, 3,
-                3, 2, 6, 7,
-                7, 6, 5, 4,
-                4, 5, 1, 0,
-                1, 5, 6, 2,
-                0, 3, 7, 4,*/
-                3, 2, 1, 0,
-                7, 6, 2, 3,
-                4, 5, 6, 7,
-                0, 1, 5, 4,
-                2, 6, 5, 1,
-                4, 7, 3, 0,
+                0, 1, 2, 3,
+                0, 3, 7, 4,
+                4, 7, 6, 5,
+                1, 12, 13, 2,
+                9, 1, 0, 8,
+                2, 10, 11, 3,
         };
 
         glGenBuffers(1, &EBO);
@@ -98,14 +102,18 @@ public:
     }
 
     void render() const override {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glDisable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearDepth(1.0f);
+        glEnable(GL_DEPTH_TEST);
 
         double pi = 3.1415926535897932;
         glUniform3f(uniformAngle,
                     (GLfloat)(rotate_x * pi / 180),
                     (GLfloat)(rotate_y * pi / 180),
                     (GLfloat)(rotate_z * pi / 180));
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

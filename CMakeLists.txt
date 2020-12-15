@@ -12,7 +12,7 @@ add_executable(lab12 lab12/main.cpp)
 add_executable(lab13 lab13/main.cpp)
 
 # MAIN PATHS AND LIBS
-set(OPENGL_DIRS C:/MyLibraries/gl/)
+set(OPENGL_DIRS D:/MyLibraries/gl/)
 set(FREEGLUT_DIRS ${OPENGL_DIRS}/freeglut/)
 set(GLEW_DIRS ${OPENGL_DIRS}/glew-1.11.0/)
 

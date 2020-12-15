@@ -8,22 +8,31 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 ourColor;
 out vec2 TexCoord;
 
+mat3 rotX(float ang) { return mat3(
+            1.0, 0.0, 0.0,
+            0.0, cos(ang), -sin(ang),
+            0.0, sin(ang),  cos(ang));
+}
+
+mat3 rotY(float ang) { return mat3(
+            cos(ang), 0.0, -sin(ang),
+            0.0,      1.0, 0.0,
+            sin(ang), 0.0, cos(ang));
+}
+
+mat3 rotZ(float ang) { return mat3(
+            cos(ang), -sin(ang), 0.0,
+            sin(ang), cos(ang),  0.0,
+            0.0,      0.0,       1.0);
+}
+
 void main()
 {
-    float x_sin = sin(angle.x);
-    float x_cos = cos(angle.x);
+    mat3 matr = rotX(angle.x) * rotY(angle.y) * rotZ(angle.z);
 
-    float y_sin = sin(angle.y);
-    float y_cos = cos(angle.y);
+    vec3 pos = matr * aPos;
 
-    float z_sin = sin(angle.z);
-    float z_cos = cos(angle.z);
-
-    vec3 rot_y = aPos * mat3(y_cos, 0, y_sin, 0, 1, 0, -y_sin, 0, y_cos);
-    vec3 rot_x = rot_y * mat3(1, 0, 0, 0, x_cos, x_sin,  0, -x_sin, x_cos);
-    vec3 rot_z = rot_x * mat3(z_cos,  z_sin, 0, -z_sin, z_cos,  0,0, 0, 1);
-
-    gl_Position = vec4(rot_z, 1.0);
+    gl_Position = vec4(pos, 1.0);
     ourColor = aColor;
     TexCoord = aTexCoord;
 }
