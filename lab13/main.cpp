@@ -1,84 +1,101 @@
-#include <iostream>
-#include <tuple>
+#include "GL/glew.h"
+#include "GL/freeglut.h"
+#include "../common/common.h"
+#include "./task1.h"
+#include "task2.h"
+#include "task3.h"
+#include "task4.h"
+#include "task5.h"
 
-#define GL_SILENCE_DEPRECATION
-///Freeglut
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-#include <cmath>
+auto tasks = new task*[5];
+task * currentTask;
+GLuint currentShader;
 
-using namespace std;
-#define PI 3.1415
+bool shadersActive = true;
 
-static int w = 0, h = 0;
-
-void Reshape(int width, int height) {
-    w = width;
-    h = height;
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+void update() {
+    currentTask->update();
 }
 
-void setPerspective() {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(65.0f, w / h, 1.0f, 1000.0f);
+void render() {
+    currentTask->render();
+}
+
+void specialKeys(int key, int x, int y) {
+    auto offset = key - GLUT_KEY_F1;
+
+    //! Если нажали F1-F5 - переключаем задачу
+    if (offset >= 0 && offset < 5) {
+        currentTask = tasks[offset];
+        currentShader = currentTask->getProgram();
+    }
+        //! Если нажали F6 - вырубаем шейдер
+    else if (offset == 5)
+        shadersActive = !shadersActive;
+
+    if (shadersActive)
+        glUseProgram(currentShader);
+    else
+        glUseProgram(0);
+
     glutPostRedisplay();
 }
 
-float angle = 0.0;
-
-void renderTeapot() {
-    setPerspective();
-    glMatrixMode(GL_MODELVIEW);
-//  angle += 0.05f;
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-
-    gluLookAt(100.0f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-    glRotatef(angle, 0.0f, 1.0f, 0.0f);
-
-    glColor3f(1.0, 1.0, 1.0);
-    glutWireTeapot(50.0f);
-    glFlush();
-
-    glutSwapBuffers();
+//! Освобождение шейдеров
+void freeShaders()
+{
+    //! Передавая ноль, мы отключаем шейдрную программу
+    glUseProgram(0);
+    //! Удаляем шейдерную программу
+    for (int i = 0; i < 5; i++) {
+        glDeleteProgram(tasks[i]->getProgram());
+    }
+}
+void resizeWindow(int width, int height)
+{
+    glViewport(0, 0, width, height);
 }
 
-void Update() {
-    renderTeapot();
-    angle += 0.1f;
+void initTasks() {
+    tasks[0] = new task1();
+    tasks[1] = new task2();
+    tasks[2] = new task3();
+    tasks[3] = new task4();
+    tasks[4] = new task5();
+    currentTask = tasks[0];
+    currentShader = currentTask->getProgram();
+    glUseProgram(currentShader);
 }
 
-void Init() {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(100, 100);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
-    glutCreateWindow("Lab 12");
-
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-//    glEnable(GL_DEPTH_TEST);
-
-    glutReshapeFunc(Reshape);
-    glutDisplayFunc(renderTeapot);
-    glutIdleFunc(Update);
-    Init();
-//  glutKeyboardFunc(cameraKeys);
-//  glutSpecialFunc(carKeys);
-
+    glutCreateWindow("Simple shaders");
+    glClearColor(0, 0, 0, 0);
+    //! Обязательно перед инициализацией шейдеров
+    GLenum glew_status = glewInit();
+    if (GLEW_OK != glew_status)
+    {
+        //! GLEW не проинициализировалась
+        std::cout << "Error: " << glewGetErrorString(glew_status) << "\n";
+        return 1;
+    }
+    //! Проверяем доступность OpenGL 2.0
+    if (!GLEW_VERSION_2_0)
+    {
+        //! OpenGl 2.0 оказалась не доступна
+        std::cout << "No support for OpenGL 2.0 found\n";
+        return 1;
+    }
+    //! Инициализация шейдеров
+    initTasks();
+    glutReshapeFunc(resizeWindow);
+    glutDisplayFunc(render);
+    glutIdleFunc(update);
+    glutSpecialFunc(specialKeys);
     glutMainLoop();
-
-    return 0;
+    //! Освобождение ресурсов
+    freeShaders();
 }

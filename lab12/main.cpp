@@ -1,6 +1,6 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
-#include "common.h"
+#include "../common/common.h"
 #include "task1.h"
 #include "task2.h"
 #include "task3.h"

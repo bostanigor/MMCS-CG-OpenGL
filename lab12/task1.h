@@ -3,7 +3,7 @@
 
 #include "GL/glew.h"
 #include "GL/freeglut.h"
-#include "common.h"
+#include "../common/common.h"
 
 class task1 : public task {
     GLuint uniformAngle;
