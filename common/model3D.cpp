@@ -1,30 +1,31 @@
-#include "model.h"
+#include "model3D.h"
 
 
-std::vector<std::string> model::splitPolygon(std::vector<std::string> &words) {
+std::vector<std::string> model3D::splitPolygon(std::vector<std::string> &words) {
     std::vector<std::string> result;
     //! start from 2 because we skip first word 'f'
-    for (int i = 2; i < words.size(); i++) {
+    for (int i = 2; i < words.size() - 1; i++) {
         result.emplace_back(words[1]);
-        result.emplace_back(words[2]);
-        result.emplace_back(words[3]);
+        result.emplace_back(words[i]);
+        result.emplace_back(words[i + 1]);
     }
     return result;
 }
 
-void model::parseFile(const std::string &filePath) {
+void model3D::parseFile(const std::string &filePath) {
     std::string line;
     std::ifstream in(filePath);
 
-    std::vector<vec3> vertices;
+    std::vector<vec3> positions;
     std::vector<vec3> normals;
     std::vector<vec2> texCoords;
     std::vector<float> result;
 
+    polygonCount = 0;
     while(std::getline(in, line)) {
         auto words = split(line);
         if (words[0] == "v") {
-            vertices.push_back({
+            positions.push_back({
                    std::stof(words[1]),
                    std::stof(words[2]),
                    std::stof(words[3]),
@@ -49,7 +50,7 @@ void model::parseFile(const std::string &filePath) {
                 auto indicies = split(cortege, "/");
                 if (!indicies[0].empty()) {
                     auto vertexInd = std::stoi(indicies[0]);
-                    auto vertex = vertices[vertexInd - 1];
+                    auto vertex = positions[vertexInd - 1];
                     result.emplace_back(vertex.x);
                     result.emplace_back(vertex.y);
                     result.emplace_back(vertex.z);
@@ -64,7 +65,7 @@ void model::parseFile(const std::string &filePath) {
                     result.emplace_back(0.0f);
                     result.emplace_back(0.0f);
                 }
-                if (!indicies[2].empty()) {
+                if (indicies.size() > 2 && !indicies[2].empty()) {
                     auto normalInd = std::stoi(indicies[2]);
                     auto normal = normals[normalInd - 1];
                     result.emplace_back(normal.x);
@@ -74,35 +75,40 @@ void model::parseFile(const std::string &filePath) {
                 else {
                     result.emplace_back(0.0f);
                     result.emplace_back(0.0f);
+                    result.emplace_back(0.0f);
                 }
+                polygonCount++;
             }
         }
     }
     verticesData = result;
 }
 
-void model::initVBO() {
-    auto data = verticesData.data();
-    glGenBuffers(1, &VBO);
+void model3D::initVBO() {
+    vertices = verticesData.data();
+    elementCount = verticesData.size();
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, elementCount * sizeof(float), vertices, GL_STATIC_DRAW);
 }
 
-void model::initVAO() {
+void model3D::initVAO() {
     glGenVertexArrays(1, &VAO);
 
     glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        //! Positions
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        //! Texture coordinates
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        //! Normals
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glBindVertexArray(0);
 }
 
-model::model(const std::string &filePath) {
+model3D::model3D(const std::string &filePath) {
     parseFile(filePath);
     initVBO();
     initVAO();

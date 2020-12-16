@@ -1,6 +1,6 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
-#include "../common/model.h"
+#include "../common/model3D.h"
 #include "./task1.h"
 #include "task2.h"
 #include "task3.h"
@@ -60,8 +60,8 @@ void initTasks() {
     tasks[0] = new task1();
     tasks[1] = new task2();
     tasks[2] = new task3();
-    /*tasks[3] = new task4();
-    tasks[4] = new task5();*/
+    tasks[3] = new task4();
+    //tasks[4] = new task5();
     currentTask = tasks[0];
     currentShader = currentTask->getProgram();
     glUseProgram(currentShader);
@@ -90,7 +90,6 @@ int main(int argc, char **argv)
         return 1;
     }
     //! Инициализация шейдеров
-    model model("../assets/models/hexahedron.obj");
     initTasks();
     glutReshapeFunc(resizeWindow);
     glutDisplayFunc(render);
