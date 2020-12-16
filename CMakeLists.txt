@@ -9,7 +9,7 @@ add_executable(lab11 lab11/main.cpp
         )
 
 add_executable(lab12 lab12/main.cpp)
-add_executable(lab13 lab13/main.cpp)
+add_executable(lab13 lab13/main.cpp common/model.cpp common/model.h)
 
 # MAIN PATHS AND LIBS
 set(OPENGL_DIRS D:/MyLibraries/gl/)

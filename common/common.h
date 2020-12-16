@@ -1,3 +1,4 @@
+#pragma once
 #ifndef OPENGLABS_COMMON_H
 #define OPENGLABS_COMMON_H
 
@@ -6,23 +7,23 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 
-//! ???????? ?????? OpenGL, ???? ???? ?? ????? ? ??????? ??? ??????
-void checkOpenGLerror()
+static void checkOpenGLerror()
 {
     GLenum errCode;
     if ((errCode = glGetError()) != GL_NO_ERROR)
         std::cout << "OpenGl error! - " << gluErrorString(errCode);
 }
 
-const std::string WHITESPACE = " \n\r\t\f\v";
-std::string ltrim(const std::string& s)
+static const std::string WHITESPACE = " \n\r\t\f\v";
+static std::string ltrim(const std::string& s)
 {
     size_t start = s.find_first_not_of(WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
-std::string readFile(const std::string &filePath) {
+static std::string readFile(const std::string &filePath) {
     std::string line, text;
     std::ifstream in(filePath);
     while(std::getline(in, line))
@@ -30,7 +31,19 @@ std::string readFile(const std::string &filePath) {
     return text;
 }
 
-GLint getAttributeId(const std::string &attributeName, GLint program) {
+static std::vector<std::string> split(const std::string &str, const std::string &delim = " ") {
+    std::vector<std::string> result;
+    size_t last = 0;
+    size_t next = 0;
+    while ((next = str.find(delim, last)) != std::string::npos) {
+        result.emplace_back(str.substr(last, next - last));
+        last = next + 1;
+    }
+    result.emplace_back(str.substr(last));
+    return result;
+}
+
+static GLint getAttributeId(const std::string &attributeName, GLint program) {
     const char* attr_name = attributeName.c_str();
     auto result = glGetAttribLocation(program, attr_name);
 
@@ -40,7 +53,7 @@ GLint getAttributeId(const std::string &attributeName, GLint program) {
     return result;
 }
 
-GLint getUniformId(const std::string &uniformName, GLint program) {
+static GLint getUniformId(const std::string &uniformName, GLint program) {
     const char* unif_name = uniformName.c_str();
     auto result = glGetUniformLocation(program, unif_name);
 
@@ -50,8 +63,7 @@ GLint getUniformId(const std::string &uniformName, GLint program) {
     return result;
 }
 
-//! ????????????? ????????
-GLint initShaderProgram(const std::string &vsPath, const std::string &fsPath)
+static GLint initShaderProgram(const std::string &vsPath, const std::string &fsPath)
 {
     //! ???????? ??? ????????
     auto vsSourceCode = readFile(vsPath);
@@ -111,6 +123,17 @@ struct vertex
     GLfloat x;
     GLfloat y;
     GLfloat z;
+};
+
+struct vec3 {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+};
+
+struct vec2 {
+    GLfloat x;
+    GLfloat y;
 };
 
 #endif //OPENGLABS_COMMON_H

@@ -1,6 +1,6 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
-#include "../common/common.h"
+#include "../common/model.h"
 #include "./task1.h"
 #include "task2.h"
 #include "task3.h"
@@ -90,6 +90,7 @@ int main(int argc, char **argv)
         return 1;
     }
     //! Инициализация шейдеров
+    model model("../assets/models/hexahedron.obj");
     initTasks();
     glutReshapeFunc(resizeWindow);
     glutDisplayFunc(render);

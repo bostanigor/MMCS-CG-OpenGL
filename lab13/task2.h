@@ -32,8 +32,8 @@ public:
 
         uniformAngle = getUniformId("angle", program);
         initVBO();
-        initVAO();
         initEBO();
+        initVAO();
     }
 
     void update() override {
@@ -81,6 +81,7 @@ public:
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(2);
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBindVertexArray(0);
     }
 
@@ -114,7 +115,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
 
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
         glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
