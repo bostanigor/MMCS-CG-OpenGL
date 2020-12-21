@@ -20,11 +20,14 @@ class task5 : public task {
 
 public:
     task5() {
-        //program = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
-          //                          "../shaders/lab13/cube_phong_light.fs.c");
+        program = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                                    "../shaders/lab13/toon_shading.fs.c");
 
-        program = initShaderProgram("../shaders/lab13/standard.vs.c",
-                                    "../shaders/lab13/cube_textured.fs.c");
+//                program = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
+//                                    "../shaders/lab13/cube_phong_light.fs.c");
+
+//        program = initShaderProgram("../shaders/lab13/standard.vs.c",
+//                                    "../shaders/lab13/cube_textured.fs.c");
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load("../assets/floor.jpg", &width, &height, &nrChannels, 0);
@@ -39,8 +42,8 @@ public:
     }
 
     void update() override {
-        rotate_z += 1.0;
-        rotate_x += 1.0;
+        rotate_z += 0.1;
+        rotate_x += 0.1;
 //        rotate_z += 0.1;
         render();
     }
@@ -58,8 +61,6 @@ public:
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-
-
 
         glBindVertexArray(model1.VAO);
         glDrawArrays(GL_TRIANGLES, 0, model1.elementCount);

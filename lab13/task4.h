@@ -36,8 +36,8 @@ public:
     }
 
     void update() override {
-        rotate_z += 1.0;
-        rotate_x += 1.0;
+        rotate_z += 0.1;
+        rotate_x += 0.1;
 //        rotate_z += 0.1;
         render();
     }
