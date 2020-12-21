@@ -151,6 +151,7 @@ public:
         return program;
     }
 
+    virtual void special(int key) = 0;
     virtual void update() = 0;
     virtual void render() const = 0;
 };

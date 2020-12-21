@@ -1,7 +1,7 @@
-#version 330
+#version 330 core
 
 layout (location = 0) in vec3 position;
-layout (location = 1) in vec2 textureCoord;
+layout (location = 1) in vec2 texcoord;
 layout (location = 2) in vec3 normal;
 
 uniform struct Transform {
@@ -27,7 +27,6 @@ out Vertex {
 	float distance;
 } Vert;
 
-out vec2 TexCoord;
 varying vec4 l;
 varying vec3 n;
 
@@ -36,10 +35,9 @@ void main() {
 	vec4 lightDir = light.position - vertex;
 	l = normalize(lightDir);
 	n = normalize(transform.normal * normal);
-	Vert.texcoord = textureCoord;
+	Vert.texcoord = texcoord;
 	Vert.normal   = transform.normal * normal;
 	Vert.lightDir = vec3(light.position);
 	Vert.viewDir  = transform.viewPosition - vec3(vertex);
 	gl_Position = transform.viewProjection * vertex;
-	TexCoord = textureCoord;
 };

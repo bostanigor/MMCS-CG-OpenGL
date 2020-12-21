@@ -12,8 +12,6 @@ auto tasks = new task*[5];
 task * currentTask;
 GLuint currentShader;
 
-bool shadersActive = true;
-
 void update() {
     currentTask->update();
 }
@@ -29,16 +27,11 @@ void specialKeys(int key, int x, int y) {
     if (offset >= 0 && offset < 5) {
         currentTask = tasks[offset];
         currentShader = currentTask->getProgram();
-    }
-        //! Если нажали F6 - вырубаем шейдер
-    else if (offset == 5)
-        shadersActive = !shadersActive;
-
-    if (shadersActive)
         glUseProgram(currentShader);
-    else
-        glUseProgram(0);
-
+    }
+    else {
+        currentTask->special(key);
+    }
     glutPostRedisplay();
 }
 

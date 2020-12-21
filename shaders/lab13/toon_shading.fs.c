@@ -1,7 +1,6 @@
 #version 330
 
 out vec4 FragColor;
-in vec2 TexCoord;
 
 in Vertex {
     vec2 texcoord;
@@ -20,6 +19,7 @@ uniform struct PointLight {
 } light;
 
 uniform struct Material {
+    sampler2D texture;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -27,7 +27,6 @@ uniform struct Material {
 	float shininess;
 } material;
 
-uniform sampler2D texture1;
 varying vec4 l;
 varying vec3 n;
 
@@ -43,5 +42,5 @@ void main() {
 		color = material.diffuse;
 	else
 		color = material.diffuse * 1.3;
-	FragColor = color * texture(texture1, TexCoord);
+	FragColor = color * texture(material.texture, Vert.texcoord);
 };

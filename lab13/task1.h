@@ -124,6 +124,8 @@ public:
 
         glutSwapBuffers();
     }
+
+    void special(int key) override { }
 };
 
 #endif //OPENGLABS_TASK1_H

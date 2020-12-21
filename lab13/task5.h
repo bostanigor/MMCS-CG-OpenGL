@@ -19,6 +19,9 @@ class task5 : public task {
 
     GLuint texture;
 
+    GLuint program1;
+    GLuint program2;
+
     double rotate_x = 0;
     double rotate_y = 0;
     double rotate_z = 0;
@@ -28,14 +31,14 @@ class task5 : public task {
 
 public:
     task5() {
-        /*program = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
-                                    "../shaders/lab13/toon_shading.fs.c");*/
-
         program = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
                                     "../shaders/lab13/cube_phong_light.fs.c");
 
-        /*program = initShaderProgram("../shaders/lab13/standard.vs.c",
-                                    "../shaders/lab13/cube_textured.fs.c");*/
+        program1 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                                    "../shaders/lab13/toon_shading.fs.c");
+
+        program2 = initShaderProgram("../shaders/lab13/standard.vs.c",
+                                    "../shaders/lab13/cube_textured.fs.c");
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load("../assets/floor.jpg", &width, &height, &nrChannels, 0);
@@ -74,7 +77,7 @@ public:
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
-                      { -1.0, -1.0, -1.0 });
+                      { 5.0, 5.0, 5.0 });
 
         material = Material(texture,
                       { 1.0, 1.0, 1.0, 1.0 },
@@ -103,9 +106,11 @@ public:
     }
 
     void update() override {
+        /*rotate_z += 0.1;
+        rotate_x += 0.1;*/
         rotate_z += 0.1;
-        rotate_x += 0.1;
-//        rotate_z += 0.1;
+
+        light.position = { 1.0, 1.0,  2 * (GLfloat)sin(rotate_z)};
         render();
     }
 
@@ -135,6 +140,21 @@ public:
         glFlush();
 
         glutSwapBuffers();
+    }
+
+    void special(int key) override {
+        switch(key) {
+            case GLUT_KEY_F6:
+                glUseProgram(program);
+                break;
+            case GLUT_KEY_F7:
+                glUseProgram(program1);
+                break;
+            case GLUT_KEY_F8:
+                glUseProgram(program2);
+                break;
+        }
+        render();
     }
 };
 
