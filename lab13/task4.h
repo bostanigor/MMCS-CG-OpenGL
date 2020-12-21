@@ -15,7 +15,7 @@ class task4 : public task {
     double rotate_y = 0;
     double rotate_z = 0;
 
-    model3D model = model3D("../assets/models/hexahedron.obj");
+    model3D model = model3D("../assets/models/pumpkin.obj", (float)(1.0f/150.0f));
 
 public:
     task4() {

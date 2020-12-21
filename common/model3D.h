@@ -14,13 +14,13 @@ public:
     int polygonCount;
     int elementCount;
 
-    model3D(const std::string &filePath);
+    model3D(const std::string &filePath, float scale);
 
 private:
     //! To split faces with more than 3 vertices
     std::vector<std::string> splitPolygon(std::vector<std::string> &words);
 
-    void parseFile(const std::string &filePath);
+    void parseFile(const std::string &filePath, float scale);
 
     void initVBO();
     void initVAO();

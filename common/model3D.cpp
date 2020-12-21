@@ -12,7 +12,7 @@ std::vector<std::string> model3D::splitPolygon(std::vector<std::string> &words) 
     return result;
 }
 
-void model3D::parseFile(const std::string &filePath) {
+void model3D::parseFile(const std::string &filePath, float scale = 1) {
     std::string line;
     std::ifstream in(filePath);
 
@@ -51,9 +51,9 @@ void model3D::parseFile(const std::string &filePath) {
                 if (!indicies[0].empty()) {
                     auto vertexInd = std::stoi(indicies[0]);
                     auto vertex = positions[vertexInd - 1];
-                    result.emplace_back(vertex.x);
-                    result.emplace_back(vertex.y);
-                    result.emplace_back(vertex.z);
+                    result.emplace_back(vertex.x * scale);
+                    result.emplace_back(vertex.y * scale);
+                    result.emplace_back(vertex.z * scale);
                 }
                 if (!indicies[1].empty()) {
                     auto texCoordInd = std::stoi(indicies[1]);
@@ -108,8 +108,8 @@ void model3D::initVAO() {
     glBindVertexArray(0);
 }
 
-model3D::model3D(const std::string &filePath) {
-    parseFile(filePath);
+model3D::model3D(const std::string &filePath, float scale = 1) {
+    parseFile(filePath, scale);
     initVBO();
     initVAO();
 }
