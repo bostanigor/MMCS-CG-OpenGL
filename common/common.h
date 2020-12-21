@@ -79,8 +79,20 @@ static GLint initShaderProgram(const std::string &vsPath, const std::string &fsP
     glShaderSource(vShader, 1, &vsSource, NULL);
     //! ??????????? ??????
     glCompileShader(vShader);
-    GLint success = 0;
-    glGetShaderiv(vShader, GL_COMPILE_STATUS, &success);
+    GLint vSuccess = 0;
+    glGetShaderiv(vShader, GL_COMPILE_STATUS, &vSuccess);
+
+    if (vSuccess == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetShaderiv(vShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+        std::vector<GLchar> errorLog(maxLength);
+        glGetShaderInfoLog(vShader, maxLength, &maxLength, &errorLog[0]);
+
+//        std::cout << "Vertex shader error: ";
+        for (auto symbol : errorLog)
+            std::cout << symbol;
+    }
 
     //! ??????? ??????????? ??????
     fShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -88,6 +100,22 @@ static GLint initShaderProgram(const std::string &vsPath, const std::string &fsP
     glShaderSource(fShader, 1, &fsSource, NULL);
     //! ??????????? ??????
     glCompileShader(fShader);
+
+    GLint fSuccess = 0;
+    glGetShaderiv(vShader, GL_COMPILE_STATUS, &fSuccess);
+
+    if (fSuccess == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetShaderiv(vShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+        std::vector<GLchar> errorLog(maxLength);
+        glGetShaderInfoLog(vShader, maxLength, &maxLength, &errorLog[0]);
+
+//        std::cout << "Fragment shader error: ";
+        for (auto symbol : errorLog)
+            std::cout << symbol;
+    }
+
     //! ??????? ????????? ? ??????????? ??????? ? ???
     auto program = glCreateProgram();
     glAttachShader(program, vShader);
