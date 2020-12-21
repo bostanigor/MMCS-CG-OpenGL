@@ -97,12 +97,20 @@ static GLint initShaderProgram(const std::string &vsPath, const std::string &fsP
     //! ????????? ?????? ??????
     int link_ok;
     glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
-    if (!link_ok)
-        throw std::exception("error attach shaders");
+
+    if (link_ok == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+
+        std::vector<GLchar> infoLog(maxLength);
+        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        for (auto symbol : infoLog)
+            std::cout << symbol;
+    }
+
+    checkOpenGLerror();
 
     return program;
-
-//    checkOpenGLerror();
 }
 
 class task {
