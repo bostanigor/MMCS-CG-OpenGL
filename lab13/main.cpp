@@ -61,28 +61,8 @@ void initTasks() {
     glUseProgram(currentShader);
 }
 
-void computeNormal(float * coords) {
-    float x0 = coords[0];
-    float y0 = coords[1];
-    float z0 = coords[2];
-    float x1 = coords[3];
-    float y1 = coords[4];
-    float z1 = coords[5];
-    float x2 = coords[6];
-    float y2 = coords[7];
-    float z2 = coords[8];
-
-    std::cout << "A: " << (y1 - y0) * (z2- z0) - (z1 - z0)* (y2 - y0) << std::endl;
-    std:: cout << "B: " << (z1 - z0) * (x2 - x0) - (x1 - x0) * (z2 -z0) << std::endl;
-    std:: cout << "C: " << (x1- x0)* (y2 - y0) - (y1 - y0) * (x2 - x0) << std::endl;
-}
-
 int main(int argc, char **argv)
 {
-    float a[] = {-0.5f, -0.5f, -0.5f,
-                 -0.5f, 0.5f, -0.5f,
-                 0.5f, 0.5f, -0.5f};
-    computeNormal(a);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE);
     glutInitWindowSize(600, 600);

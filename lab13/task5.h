@@ -38,8 +38,12 @@ public:
         program2 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
                                     "../shaders/lab13/toon_shading.fs.c");
 
-        program3 = initShaderProgram("../shaders/lab13/standard.vs.c",
-                                    "../shaders/lab13/cube_textured.fs.c");
+//        program3 = initShaderProgram("../shaders/lab13/standard.vs.c",
+//                                    "../shaders/lab13/cube_textured.fs.c");
+
+        program3 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                                     "../shaders/lab13/bidirectional.fs.c");
+
 
         program = program1;
         int width, height, nrChannels;
@@ -51,8 +55,6 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-
-//        uniformAngle = getUniformId("angle", program);
 
         uniformLight = UniformStruct("light", {
                 "position",
@@ -109,9 +111,7 @@ public:
     }
 
     void update() override {
-        /*rotate_z += 0.1;
-        rotate_x += 0.1;*/
-        rotate_z += 0.1;
+        rotate_z += 0.01;
 
         light.position = {  2 * (GLfloat)cos(rotate_z), 0.0,  2 * (GLfloat)sin(rotate_z)};
         render();
@@ -121,13 +121,6 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearDepth(1.0f);
         glEnable(GL_DEPTH_TEST);
-
-        double pi = 3.1415926535897932;
-        /*glUniform3f(uniformAngle,
-                    (GLfloat)(rotate_x * pi / 180),
-                    (GLfloat)(rotate_y * pi / 180),
-                    (GLfloat)(rotate_z * pi / 180));*/
-
 
         light.setUniform(program, uniformLight);
         material.setUniform(program, uniformMaterial);
