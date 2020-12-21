@@ -38,9 +38,6 @@ public:
         program2 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
                                     "../shaders/lab13/toon_shading.fs.c");
 
-//        program3 = initShaderProgram("../shaders/lab13/standard.vs.c",
-//                                    "../shaders/lab13/cube_textured.fs.c");
-
         program3 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
                                      "../shaders/lab13/bidirectional.fs.c");
 

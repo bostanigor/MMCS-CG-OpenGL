@@ -1,5 +1,22 @@
 out vec4 FragColor;
 
+in Vertex {
+        vec2 texcoord;
+        vec3 normal;
+        vec3 lightDir;
+        vec3 viewDir;
+        float distance;
+} Vert;
+
+uniform struct Material {
+    sampler2D texture;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    vec4 emission;
+    float shininess;
+} material;
+
 varying vec4 l;
 varying vec3 n;
 
@@ -9,7 +26,7 @@ void main(void) {
 
     vec3 n2 = normalize(n);
     vec3 l2 = normalize(vec3(l));
-    vec4 diff = color0 * max(dot(n2, l2), 0.0) + color2 * max(dot(n2, -l2), 0.0);
+    vec4 diff = material.diffuse * color0 * max(dot(n2, l2), 0.0) + color2 * max(dot(n2, -l2), 0.0);
 
-    FragColor = diff;
+    FragColor = diff * texture(material.texture, Vert.texcoord);
 }
