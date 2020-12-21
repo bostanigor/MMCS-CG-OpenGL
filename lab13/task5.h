@@ -77,7 +77,7 @@ public:
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
-                      { 5.0, 5.0, 5.0 });
+                      { 1.0, 1.0, 1.0 });
 
         material = Material(texture,
                       { 1.0, 1.0, 1.0, 1.0 },
@@ -89,7 +89,7 @@ public:
         transform = {
                         {1.0, 0.0, 0.0, 0.0,
                         0.0, 1.0, 0.0, 0.0,
-                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, -1.0, 0.0,
                         0.0, 0.0, 0.0, 1.0},
 
                         {1.0, 0.0, 0.0, 0.0,
@@ -110,7 +110,7 @@ public:
         rotate_x += 0.1;*/
         rotate_z += 0.1;
 
-        light.position = { 1.0, 1.0,  2 * (GLfloat)sin(rotate_z)};
+        light.position = {  2 * (GLfloat)cos(rotate_z), 0.0,  2 * (GLfloat)sin(rotate_z)};
         render();
     }
 
