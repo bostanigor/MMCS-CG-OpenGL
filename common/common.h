@@ -58,8 +58,8 @@ static GLint getUniformId(const std::string &uniformName, GLint program) {
     const char* unif_name = uniformName.c_str();
     auto result = glGetUniformLocation(program, unif_name);
 
-    if (result == -1)
-        throw std::exception("could not bind uniform");
+    /*if (result == -1)
+        throw std::exception("could not bind uniform");*/
 
     return result;
 }
@@ -183,21 +183,25 @@ struct vec2 {
 
 struct UniformStruct {
     std::string name;
-    GLuint program;
-    std::map<std::string, GLuint> data;
+
+    //! Program -> (uniform name -> uniform id)
+    std::map<GLuint, std::map<std::string, GLuint>> data;
 
     UniformStruct() {}
 
-    UniformStruct(std::string name, std::vector<std::string> fields, GLuint program) {
+    UniformStruct(std::string name, std::vector<std::string> fields, std::vector<GLuint> programs) {
         this->name = name;
-        this->program = program;
-        for (auto field : fields) {
-            data[field] = getUniformId(name + "." + field, program);
+        for (auto program : programs) {
+            data[program] = std::map<std::string, GLuint>();
+            glUseProgram(program);
+            for (auto field : fields) {
+                data[program][field] = getUniformId(name + "." + field, program);
+            }
         }
     }
 
-    GLuint get(std::string field) {
-        return data[field];
+    GLuint get(GLuint program, std::string field) {
+        return data[program][field];
     }
 };
 
@@ -214,12 +218,12 @@ struct Light {
     : position(position), ambient(ambient), diffuse(diffuse), specular(specular), attenuation(attenuation) {}
 
 public:
-    void setUniform(UniformStruct uniform) const {
-        glUniform4f(uniform.get("position"), position.x, position.y, position.z, position.w);
-        glUniform4f(uniform.get("ambient"), ambient.x, ambient.y, ambient.z, ambient.w);
-        glUniform4f(uniform.get("diffuse"), diffuse.x, diffuse.y, diffuse.z, diffuse.w);
-        glUniform4f(uniform.get("specular"), specular.x, specular.y, specular.z, specular.w);
-        glUniform3f(uniform.get("attenuation"), attenuation.x, attenuation.y, attenuation.z);
+    void setUniform(GLuint program, UniformStruct uniform) const {
+        glUniform4f(uniform.get(program, "position"), position.x, position.y, position.z, position.w);
+        glUniform4f(uniform.get(program, "ambient"), ambient.x, ambient.y, ambient.z, ambient.w);
+        glUniform4f(uniform.get(program, "diffuse"), diffuse.x, diffuse.y, diffuse.z, diffuse.w);
+        glUniform4f(uniform.get(program, "specular"), specular.x, specular.y, specular.z, specular.w);
+        glUniform3f(uniform.get(program, "attenuation"), attenuation.x, attenuation.y, attenuation.z);
     }
 };
 
@@ -237,14 +241,14 @@ struct Material {
         : texture(texture), ambient(ambient), diffuse(diffuse), specular(specular), emission(emission), shininess(shininess) {}
 
 public:
-    void setUniform(UniformStruct uniform) const {
+    void setUniform(GLuint program, UniformStruct uniform) const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform4f(uniform.get("ambient"), ambient.x, ambient.y, ambient.z, ambient.w);
-        glUniform4f(uniform.get("diffuse"), diffuse.x, diffuse.y, diffuse.z, diffuse.w);
-        glUniform4f(uniform.get("specular"), specular.x, specular.y, specular.z, specular.w);
-        glUniform4f(uniform.get("emission"), emission.x, emission.y, emission.z, emission.w);
-        glUniform1f(uniform.get("shininess"), shininess);
+        glUniform4f(uniform.get(program, "ambient"), ambient.x, ambient.y, ambient.z, ambient.w);
+        glUniform4f(uniform.get(program, "diffuse"), diffuse.x, diffuse.y, diffuse.z, diffuse.w);
+        glUniform4f(uniform.get(program, "specular"), specular.x, specular.y, specular.z, specular.w);
+        glUniform4f(uniform.get(program, "emission"), emission.x, emission.y, emission.z, emission.w);
+        glUniform1f(uniform.get(program, "shininess"), shininess);
     }
 };
 
@@ -263,11 +267,11 @@ struct Transform {
     vec3 viewPosition;
 
 public:
-    void setUniform(UniformStruct uniform) const {
-        glUniformMatrix4fv(uniform.get("model"), 1, GL_FALSE, &model.data[0]);
-        glUniformMatrix4fv(uniform.get("viewProjection"), 1, GL_FALSE, &viewProjection.data[0]);
-        glUniformMatrix3fv(uniform.get("normal"), 1, GL_FALSE, &normal.data[0]);
-        glUniform3f(uniform.get("viewPosition"), viewPosition.x, viewPosition.y, viewPosition.z);
+    void setUniform(GLuint program, UniformStruct uniform) const {
+        glUniformMatrix4fv(uniform.get(program, "model"), 1, GL_FALSE, &model.data[0]);
+        glUniformMatrix4fv(uniform.get(program, "viewProjection"), 1, GL_FALSE, &viewProjection.data[0]);
+        glUniformMatrix3fv(uniform.get(program, "normal"), 1, GL_FALSE, &normal.data[0]);
+        glUniform3f(uniform.get(program, "viewPosition"), viewPosition.x, viewPosition.y, viewPosition.z);
     }
 };
 

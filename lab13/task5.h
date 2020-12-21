@@ -21,6 +21,7 @@ class task5 : public task {
 
     GLuint program1;
     GLuint program2;
+    GLuint program3;
 
     double rotate_x = 0;
     double rotate_y = 0;
@@ -31,14 +32,16 @@ class task5 : public task {
 
 public:
     task5() {
-        program = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
+        program1 = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
                                     "../shaders/lab13/cube_phong_light.fs.c");
 
-        program1 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+        program2 = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
                                     "../shaders/lab13/toon_shading.fs.c");
 
-        program2 = initShaderProgram("../shaders/lab13/standard.vs.c",
+        program3 = initShaderProgram("../shaders/lab13/standard.vs.c",
                                     "../shaders/lab13/cube_textured.fs.c");
+
+        program = program1;
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *data = stbi_load("../assets/floor.jpg", &width, &height, &nrChannels, 0);
@@ -57,7 +60,7 @@ public:
                 "diffuse",
                 "specular",
                 "attenuation",
-            }, program );
+            }, { program1, program2, program3 } );
         uniformMaterial = UniformStruct("material", {
                 "texture",
                 "ambient",
@@ -65,13 +68,13 @@ public:
                 "specular",
                 "emission",
                 "shininess",
-            }, program );
+            }, { program1, program2, program3 } );
         uniformTransform = UniformStruct("transform", {
                 "model",
                 "viewProjection",
                 "normal",
                 "viewPosition"
-        }, program );
+        }, { program1, program2, program3 } );
 
         light = Light({ 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
@@ -126,9 +129,9 @@ public:
                     (GLfloat)(rotate_z * pi / 180));*/
 
 
-        light.setUniform(uniformLight);
-        material.setUniform(uniformMaterial);
-        transform.setUniform(uniformTransform);
+        light.setUniform(program, uniformLight);
+        material.setUniform(program, uniformMaterial);
+        transform.setUniform(program, uniformTransform);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -145,15 +148,16 @@ public:
     void special(int key) override {
         switch(key) {
             case GLUT_KEY_F6:
-                glUseProgram(program);
+                program = program1;
                 break;
             case GLUT_KEY_F7:
-                glUseProgram(program1);
+                program = program2;
                 break;
             case GLUT_KEY_F8:
-                glUseProgram(program2);
+                program = program3;
                 break;
         }
+        glUseProgram(program);
         render();
     }
 };
