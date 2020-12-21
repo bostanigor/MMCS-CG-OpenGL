@@ -33,6 +33,6 @@ void main()
     vec3 pos = matr * aPos;
 
     gl_Position = vec4(pos, 1.0);
-    ourColor = vec3(1.0, 1.0, 1.0);
+    ourColor = aColor;
     TexCoord = aTexCoord;
 }

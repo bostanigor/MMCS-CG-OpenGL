@@ -87,6 +87,7 @@ void model3D::parseFile(const std::string &filePath, float scale = 1) {
 void model3D::initVBO() {
     vertices = verticesData.data();
     elementCount = verticesData.size();
+    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, elementCount * sizeof(float), vertices, GL_STATIC_DRAW);
 }
