@@ -13,7 +13,7 @@ uniform struct PointLight {
 } light;
 
 uniform structMaterial {// параметры материала
-        sample r2Dtexture;
+        sampler2D texture;
         vec4 ambient;
         vec4 diffuse;
         vec4 specular;

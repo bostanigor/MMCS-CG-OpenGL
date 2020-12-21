@@ -4,9 +4,9 @@
 #define VERT_TEXCOORD 1
 #define VERT_NORMAL 2
 
-layout(location = VERT_POSITION) in vec3 position;
-layout(location = VERT_TEXCOORD) in vec2 texcoord;
-layout(location = VERT_NORMAL) in vec3 normal;
+layout (location = VERT_POSITION) in vec3 position;
+layout (location = VERT_TEXCOORD) in vec2 texcoord;
+layout (location = VERT_NORMAL) in vec3 normal;
 
 // параметры преобразований
 uniform struct Transform {
