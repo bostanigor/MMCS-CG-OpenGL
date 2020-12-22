@@ -84,7 +84,7 @@ public:
         material = Material(texture,
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
-                      { 1.0, 1.0, 1.0, 1.0 },
+                      { 0.3, 0.3, 0.3, 1.0 },
                       { 1.0, 1.0, 1.0 },
                       1.0);
 
@@ -108,7 +108,7 @@ public:
     }
 
     void update() override {
-        rotate_z += 0.01;
+        rotate_z += 0.1;
 
         light.position = {  2 * (GLfloat)cos(rotate_z), 0.0,  2 * (GLfloat)sin(rotate_z)};
         render();
