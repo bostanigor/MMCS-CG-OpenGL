@@ -50,7 +50,7 @@ void render() {
 
     for (auto object : sceneObjects) {
         material = &(object.material);
-        transform->model = cameraMatrix * object.getModelTransform();
+        transform->model = object.getModelTransform() * cameraMatrix;
 
         material->setUniform(shader, uniformMaterial);
         transform->setUniform(shader, uniformTransform);
@@ -141,7 +141,8 @@ void initScene() {
                           { 0.5f, 0.5f, 0.5f, 1.0f },
                           { 0, 0, 0 },
                           32.0f };
-    sceneObjects.emplace_back(cat_m, material, vec3{0.0, 0.0f, 0.0});
+    sceneObjects.emplace_back(cat_m, material, vec3{-1.0, 0.0f, 0.0});
+    sceneObjects.emplace_back(cat_m, material, vec3{2.0, 1.0f, 0.0});
 //    cat = sceneObject(cat_m, material);
 }
 
