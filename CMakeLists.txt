@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(lab11 lab11/main.cpp lab11/Car.cpp lab11/Car.h)
 add_executable(lab12 lab12/main.cpp)
 add_executable(lab13 lab13/main.cpp common/model3D.cpp common/model3D.h)
-add_executable(ind3kostikova ind3kostikova/main.cpp)
+add_executable(ind3kostikova ind3kostikova/main.cpp common/common.cpp common/common.h common/model3D.cpp common/model3D.h
+        common/sceneObject.cpp common/sceneObject.h)
 
 # MAIN PATHS AND LIBS
 set(OPENGL_DIRS C:/Users/Lereena/gl)
