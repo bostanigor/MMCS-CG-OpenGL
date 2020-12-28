@@ -34,7 +34,8 @@ out Vertex {
 void main ( void ) {
     vec4 vertex = transform.model * vec4(position, 1.0);
     vec4 lightDir = light.position - vertex;
-    gl_Position = transform.viewProjection * vertex;
+
+    gl_Position = transform.viewProjection * (vertex - vec4(transform.viewPosition, 0.0));
     Vert.texcoord = texcoord;
     Vert.normal = transform.normal * normal;
     Vert.lightDir = vec3(lightDir);

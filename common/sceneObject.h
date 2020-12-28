@@ -6,14 +6,14 @@
 class sceneObject {
     model3D * model;
 
-    GLuint texture;
+public:
     Material material;
-
     vec3 position;
 
-public:
     sceneObject() {};
-    sceneObject(model3D * model, GLuint texture, Material material);
+    sceneObject(model3D * model, Material material, vec3 position = { 0.0f, 0.0f, 0.0f });
+
+    mat4 getModelTransform();
 
     void render();
 };
