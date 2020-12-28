@@ -11,6 +11,8 @@
 GLuint shader;
 
 int width, height;
+GLfloat angleY = 0.0f;
+GLfloat cameraDistance = 2.0f;
 
 UniformStruct uniformLight;
 UniformStruct uniformMaterial;
@@ -32,6 +34,8 @@ Transform * transform = new Transform {
         { 0.0, 0.0, 0.0f}
 };
 
+mat4 cameraMatrix;
+
 std::vector<sceneObject> sceneObjects;
 
 void render() {
@@ -43,7 +47,7 @@ void render() {
 
     for (auto object : sceneObjects) {
         material = &(object.material);
-        transform->model = object.getModelTransform();
+        transform->model = cameraMatrix;
 
         material->setUniform(shader, uniformMaterial);
         transform->setUniform(shader, uniformTransform);
@@ -58,6 +62,15 @@ void render() {
 void update() {
 //    sceneObjects[0].position.z -= 10.0f;
 //    transform->viewPosition.z -= 0.01f;
+    angleY += 0.01f;
+    vec3 cameraPos = {
+            cameraDistance * sin(angleY),
+            0.0,
+            cameraDistance * cos(angleY)
+    };
+    transform->viewPosition = cameraPos;
+
+    cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
     render();
 }
 
