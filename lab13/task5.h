@@ -17,18 +17,22 @@ class task5 : public task {
     Material material;
     Transform transform;
 
-    GLuint texture;
+    GLuint texture[2];
 
     GLuint program1;
     GLuint program2;
     GLuint program3;
+
+    Material material0;
+    Material material1;
 
     double rotate_x = 0;
     double rotate_y = 0;
     double rotate_z = 0;
 
 
-    model3D model = model3D("../assets/models/stone_man.obj", (float)(1.0f / 10.0f));
+    model3D model = model3D("../assets/models/monkey.obj", (float)(1.0f/150.0f));
+    model3D model1 = model3D("../assets/models/stone_man.obj", (float)(1.0f / 10.0f));
 
 public:
     task5() {
@@ -45,12 +49,17 @@ public:
         program = program1;
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
-        unsigned char *data = stbi_load("../assets/floor.jpg", &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load("../assets/glitter.jpg", &width, &height, &nrChannels, 0);
+        unsigned char *data1 = stbi_load("../assets/glitter.jpg", &width, &height, &nrChannels, 0);
 
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(2, texture);
+        glBindTexture(GL_TEXTURE_2D, texture[0]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, texture[1]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         uniformLight = UniformStruct("light", {
@@ -79,14 +88,23 @@ public:
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
-                      { 1.0, 1.0, 1.0 });
+                      { 0.7, 0.7, 0.7 });
 
-        material = Material(texture,
+        material0 = Material(texture[0],
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 1.0, 1.0, 1.0, 1.0 },
                       { 0.3, 0.3, 0.3, 1.0 },
                       { 1.0, 1.0, 1.0 },
                       1.0);
+
+        material1 = Material(texture[1],
+                             { 1.0, 1.0, 1.0, 1.0 },
+                             { 1.0, 1.0, 1.0, 1.0 },
+                             { 0.3, 0.3, 0.3, 1.0 },
+                             { 1.0, 1.0, 1.0 },
+                             1.0);
+
+        material = material0;
 
         transform = {
                         {1.0, 0.0, 0.0, 0.0,
@@ -110,7 +128,7 @@ public:
     void update() override {
         rotate_z += 0.1;
 
-        light.position = {  2 * (GLfloat)cos(rotate_z), 0.0,  2 * (GLfloat)sin(rotate_z)};
+        //light.position = {  2 * (GLfloat)cos(rotate_z), 0.0,  2 * (GLfloat)sin(rotate_z)};
         render();
     }
 
@@ -124,7 +142,7 @@ public:
         transform.setUniform(program, uniformTransform);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, texture[0]);
 
         glBindVertexArray(model.VAO);
         glDrawArrays(GL_TRIANGLES, 0, model.elementCount);
@@ -145,6 +163,12 @@ public:
                 break;
             case GLUT_KEY_F8:
                 program = program3;
+                break;
+            case GLUT_KEY_F9:
+                material = material0;
+                break;
+            case GLUT_KEY_F10:
+                material = material1;
                 break;
         }
         glUseProgram(program);

@@ -9,14 +9,14 @@ in Vertex {
     vec3 viewDir;
     float distance;
 } Vert;
-
+/*
 uniform struct PointLight {
 	vec4 position;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
 	vec3 attenuation;
-} light;
+} light;*/
 
 uniform struct Material {
     sampler2D texture;

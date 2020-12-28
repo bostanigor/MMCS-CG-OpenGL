@@ -3,11 +3,11 @@
 out vec4 FragColor;
 
 in Vertex {
-        vec2 texcoord;
-        vec3 normal;
-        vec3 lightDir;
-        vec3 viewDir;
-        float distance;
+    vec2 texcoord;
+    vec3 normal;
+    vec3 lightDir;
+    vec3 viewDir;
+    float distance;
 } Vert;
 
 uniform struct Material {

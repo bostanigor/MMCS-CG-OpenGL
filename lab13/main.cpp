@@ -56,7 +56,7 @@ void initTasks() {
     tasks[2] = new task3();
     tasks[3] = new task4();
     tasks[4] = new task5();
-    currentTask = tasks[0];
+    currentTask = tasks[4];
     currentShader = currentTask->getProgram();
     glUseProgram(currentShader);
 }
