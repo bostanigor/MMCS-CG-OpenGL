@@ -105,7 +105,7 @@ void initShader() {
 //    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
 //                               "../shaders/lab13/cube_phong_light.fs.c");
     shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
-                               "../shaders/lab13/toon_shading.fs.c");
+                               "../shaders/lab13/cube_phong_light.fs.c");
     glUseProgram(shader);
     uniformLight = UniformStruct("light", {
             "position",
@@ -134,8 +134,8 @@ void initScene() {
     auto table_model = new model3D("../assets/models/table/table.obj", (float)(1.0f / 1.5f));
     auto table_texture = loadTex("../assets/models/table/wood.jpg");
     Material material = {table_texture,
-                         { 1.0f, 0.5f, 0.31f, 1.0f },
-                         { 1.0f, 0.5f, 0.31f, 1.0f },
+                         { 1.0f, 0.5f, 0.5f, 1.0f },
+                         { 1.0f, 0.5f, 0.5f, 1.0f },
                          { 0.5f, 0.5f, 0.5f, 1.0f },
                          { 0, 0, 0 },
                          32.0f };
@@ -144,23 +144,42 @@ void initScene() {
     auto chair = new model3D("../assets/models/chair.obj", (float)(1.0f / 70.0f));
     auto chair_texture = loadTex("../assets/leather.jpg");
     Material chair_material = {chair_texture,
-                         { 1.0f, 0.5f, 0.31f, 1.0f },
-                         { 1.0f, 0.5f, 0.31f, 1.0f },
-                         { 0.5f, 0.5f, 0.5f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
                          { 0, 0, 0 },
-                         32.0f };
+                         30.0f };
     sceneObjects.emplace_back(chair, chair_material, vec3{1.5, 0.0, 0.0});
 
     auto plant = new model3D("../assets/models/plant1/plant1.obj", (float)(1.0f / 5.0f));
     auto plant_texture = loadTex("../assets/models/plant1/plant1.jpg");
     Material plant_material = {plant_texture,
-                               { 1.0f, 0.5f, 0.31f, 1.0f },
-                               { 1.0f, 0.5f, 0.31f, 1.0f },
-                               { 0.5f, 0.5f, 0.5f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
+                               { 1.0f, 1.0f, 1.0f, 1.0f },
                                { 0, 0, 0 },
-                               32.0f };
+                               20.0f };
     sceneObjects.emplace_back(plant, plant_material, vec3{0.0, 1.0, 0.0});
 
+    auto glasses = new model3D("../assets/models/glasses/glasses.obj", (float)(1.0f / 5.0f));
+    auto glasses_texture = loadTex("../assets/models/glasses/glasses.jpg");
+    Material glasses_material = {glasses_texture,
+                                 { 1.0f, 1.0f, 1.0f, 1.0f },
+                                 { 1.0f, 1.0f, 1.0f, 1.0f },
+                                 { 1.0f, 1.0f, 1.0f, 1.0f },
+                                 { 0, 0, 0 },
+                                 20.0f };
+    sceneObjects.emplace_back(glasses, glasses_material, vec3{0.5, 1.0, 0.0});
+
+    auto rug = new model3D("../assets/models/rug/rug.obj", (float)(1.0f / 40.0f));
+    auto rug_texture = loadTex("../assets/models/rug/rug.jpg");
+    Material rug_material = {rug_texture,
+                             { 0.4f, 0.4f, 0.4f, 1.0f },
+                             { 0.4f, 0.4f, 0.4f, 1.0f },
+                             { 0.4f, 0.4f, 0.4f, 1.0f },
+                                 { 0, 0, 0 },
+                                 1.0f };
+    sceneObjects.emplace_back(rug, rug_material, vec3{0.0, .0, 0.0}, 1.57);
 }
 
 int main(int argc, char **argv) {
@@ -168,7 +187,7 @@ int main(int argc, char **argv) {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE);
     glutInitWindowSize(600, 600);
     glutCreateWindow("Simple shaders");
-    glClearColor(0, 0, 0, 0);
+    glClearColor(0.5, 0.5, 0.5, 0);
 
     GLenum glew_status = glewInit();
     if (GLEW_OK != glew_status)
