@@ -12,7 +12,7 @@ GLuint shader;
 
 int width, height;
 GLfloat angleY = 0.0f;
-GLfloat cameraDistance = 2.0f;
+GLfloat cameraDistance = 3.0f;
 
 UniformStruct uniformLight;
 UniformStruct uniformMaterial;
@@ -50,7 +50,7 @@ void render() {
 
     for (auto object : sceneObjects) {
         material = &(object.material);
-        transform->model = cameraMatrix * object.getModelTransform();
+        transform->model = object.getModelTransform() * cameraMatrix;
 
         material->setUniform(shader, uniformMaterial);
         transform->setUniform(shader, uniformTransform);
@@ -65,7 +65,7 @@ void render() {
 void update() {
 //    sceneObjects[0].position.z -= 10.0f;
 //    transform->viewPosition.z -= 0.01f;
-    angleY += 0.01f;
+    angleY += 0.001f;
     vec3 cameraPos = {
             cameraDistance * sin(angleY),
             1.2,
@@ -141,10 +141,26 @@ void initScene() {
                          32.0f };
     sceneObjects.emplace_back(table_model, material, vec3{0.0, 0.0f, 0.0});
 
-    auto chair = new model3D("../assets/models/chair.obj", (float)(1.0f / 52.0f));
-    sceneObjects.emplace_back(chair, material, vec3{2.0, 0.0, 0.0});
+    auto chair = new model3D("../assets/models/chair.obj", (float)(1.0f / 70.0f));
+    auto chair_texture = loadTex("../assets/leather.jpg");
+    Material chair_material = {chair_texture,
+                         { 1.0f, 0.5f, 0.31f, 1.0f },
+                         { 1.0f, 0.5f, 0.31f, 1.0f },
+                         { 0.5f, 0.5f, 0.5f, 1.0f },
+                         { 0, 0, 0 },
+                         32.0f };
+    sceneObjects.emplace_back(chair, chair_material, vec3{1.5, 0.0, 0.0});
 
-//    cat = sceneObject(table_model, material);
+    auto plant = new model3D("../assets/models/plant1/plant1.obj", (float)(1.0f / 5.0f));
+    auto plant_texture = loadTex("../assets/models/plant1/plant1.jpg");
+    Material plant_material = {plant_texture,
+                               { 1.0f, 0.5f, 0.31f, 1.0f },
+                               { 1.0f, 0.5f, 0.31f, 1.0f },
+                               { 0.5f, 0.5f, 0.5f, 1.0f },
+                               { 0, 0, 0 },
+                               32.0f };
+    sceneObjects.emplace_back(plant, plant_material, vec3{0.0, 1.0, 0.0});
+
 }
 
 int main(int argc, char **argv) {
