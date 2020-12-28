@@ -18,11 +18,14 @@ UniformStruct uniformLight;
 UniformStruct uniformMaterial;
 UniformStruct uniformTransform;
 
-Light light = Light({ 1.0, 1.0, 1.0, 1.0 },
+Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0 });
+// True position of light
+vec4 lightPos = { 0.0, 0.0, 0.0, 1.0f };
+
 Material * material;
 Transform * transform = new Transform {
         {}, {},
@@ -47,7 +50,7 @@ void render() {
 
     for (auto object : sceneObjects) {
         material = &(object.material);
-        transform->model = cameraMatrix;
+        transform->model = cameraMatrix * object.getModelTransform();
 
         material->setUniform(shader, uniformMaterial);
         transform->setUniform(shader, uniformTransform);
@@ -70,7 +73,10 @@ void update() {
     };
     transform->viewPosition = cameraPos;
 
+    auto t = lightPos;
     cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
+    light.position = cameraMatrix * lightPos;
+    t = cameraMatrix * t;
     render();
 }
 
@@ -96,8 +102,10 @@ void freeShaders() {
 }
 
 void initShader() {
-    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
-                               "../shaders/lab13/cube_phong_light.fs.c");
+//    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
+//                               "../shaders/lab13/cube_phong_light.fs.c");
+    shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                               "../shaders/lab13/toon_shading.fs.c");
     glUseProgram(shader);
     uniformLight = UniformStruct("light", {
             "position",
@@ -128,12 +136,12 @@ void initScene() {
     auto cat_m = new model3D("../assets/models/cube.obj", (float)(1.0f / 1.0f));
     auto cat_t = loadTex("../assets/floor.jpg");
     Material material = { cat_t,
-                          { 1.0, 1.0, 1.0, 1.0 },
-                          { 1.0, 1.0, 1.0, 1.0 },
-                          { 0.3, 0.3, 0.3, 1.0 },
-                          { 1.0, 1.0, 1.0 },
-                          1.0 };
-    sceneObjects.emplace_back(cat_m, material, vec3{0.0, 0.0, 0.0});
+                          { 1.0f, 0.5f, 0.31f, 1.0f },
+                          { 1.0f, 0.5f, 0.31f, 1.0f },
+                          { 0.5f, 0.5f, 0.5f, 1.0f },
+                          { 0, 0, 0 },
+                          32.0f };
+    sceneObjects.emplace_back(cat_m, material, vec3{0.0, 0.0f, 0.0});
 //    cat = sceneObject(cat_m, material);
 }
 

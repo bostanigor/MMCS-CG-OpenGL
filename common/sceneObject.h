@@ -18,6 +18,4 @@ public:
     void render();
 };
 
-
-
 #endif //OPENGLABS_SCENEOBJECT_H

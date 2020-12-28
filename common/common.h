@@ -158,6 +158,18 @@ struct mat4 {
 
         return result;
     }
+
+    vec4 operator *(const vec4 &vert) {
+        float result[4] = { 0.0f, 0.0f, 0.0f };
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++) {
+                result[i] = data[i * 4 + 0] * vert.x +
+                        data[i * 4 + 1] * vert.y +
+                        data[i * 4 + 2] * vert.z +
+                        data[i * 4 + 3] * vert.w;
+            }
+        return vec4 { result[0], result[1], result[2], result[3] };
+    }
 };
 
 struct mat3 {
