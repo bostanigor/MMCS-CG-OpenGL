@@ -61,6 +61,10 @@ struct vec3 {
     GLfloat x;
     GLfloat y;
     GLfloat z;
+
+    vec3 operator-() {
+        return { -x, -y, -z };
+    }
 };
 
 struct vec2 {
@@ -141,6 +145,19 @@ public:
 
 struct mat4 {
     float data[16];
+
+    mat4 operator *(const mat4 &other) {
+        mat4 result = { 0.0f, 0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f, 0.0f};
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                for (int k = 0; k < 4; k++)
+                    result.data[i * 4 + j] += data[i * 4 + k] * other.data[k * 4 + j];
+
+        return result;
+    }
 };
 
 struct mat3 {
@@ -161,5 +178,23 @@ public:
         glUniform3f(uniform.get(program, "viewPosition"), viewPosition.x, viewPosition.y, viewPosition.z);
     }
 };
+
+static mat4 rotationYMatrix(float angle) {
+    return {
+            cos(angle), 0.0, sin(angle), 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -sin(angle), 0.0, cos(angle), 0.0,
+            0.0, 0.0, 0.0, 1.0
+    };
+}
+
+static mat4 offsetMatrix(vec3 position) {
+   return {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            position.x, position.y, position.z, 1.0f,
+    };
+}
 
 #endif //OPENGLABS_COMMON_H
