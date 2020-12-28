@@ -11,6 +11,8 @@
 GLuint shader;
 
 int width, height;
+GLfloat angleY = 0.0f;
+GLfloat cameraDistance = 2.0f;
 
 UniformStruct uniformLight;
 UniformStruct uniformMaterial;
@@ -21,7 +23,6 @@ Light light = Light({ 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0 });
-
 Material * material;
 Transform * transform = new Transform {
         {}, {},
@@ -33,7 +34,43 @@ Transform * transform = new Transform {
         { 0.0, 0.0, 0.0f}
 };
 
+mat4 cameraMatrix;
+
 std::vector<sceneObject> sceneObjects;
+
+void render() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+
+    light.setUniform(shader, uniformLight);
+
+    for (auto object : sceneObjects) {
+        material = &(object.material);
+        transform->model = cameraMatrix;
+
+        material->setUniform(shader, uniformMaterial);
+        transform->setUniform(shader, uniformTransform);
+
+        object.render();
+    }
+
+    glFlush();
+    glutSwapBuffers();
+}
+
+void update() {
+    angleY += 0.001f;
+    vec3 cameraPos = {
+            cameraDistance * sin(angleY),
+            0.0,
+            cameraDistance * cos(angleY)
+    };
+    transform->viewPosition = cameraPos;
+
+    cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
+    render();
+}
 
 void setPerspective(float fov, float aspectRatio, float nearf, float farf) {
     float f = 1.0f / tan(fov * PI / 360);
@@ -50,6 +87,10 @@ void resizeWindow(int w, int h) {
     height = h;
     glViewport(0, 0, width, height);
     setPerspective(90.0f, (float)width / height, 1.0f, 1500000.0f);
+}
+
+void freeShaders() {
+    glDeleteProgram(shader);
 }
 
 void initShader() {
@@ -80,10 +121,8 @@ void initShader() {
 }
 
 void initScene() {
-//    auto cat_m = new model3D("../assets/models/cat/cat.obj", 1.0f / 100.0f);
-//    auto cat_t = loadTex("../assets/models/cat/cat.jpg");
-    auto cat_m = new model3D("../assets/models/cube.obj", (float)(1.0f / 1.0f));
-    auto cat_t = loadTex("../assets/floor.jpg");
+    auto cat_m = new model3D("../assets/models/table/table.obj", (float)(1.0f / 2.0f));
+    auto cat_t = loadTex("../assets/models/table/wood.jpg");
     Material material = { cat_t,
                           { 1.0, 1.0, 1.0, 1.0 },
                           { 1.0, 1.0, 1.0, 1.0 },
@@ -92,37 +131,6 @@ void initScene() {
                           1.0 };
     sceneObjects.emplace_back(cat_m, material, vec3{0.0, 0.0, 0.0});
 //    cat = sceneObject(cat_m, material);
-}
-
-void render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearDepth(1.0f);
-    glEnable(GL_DEPTH_TEST);
-
-    light.setUniform(shader, uniformLight);
-
-    for (auto object : sceneObjects) {
-        material = &(object.material);
-        transform->model = object.getModelTransform();
-
-        material->setUniform(shader, uniformMaterial);
-        transform->setUniform(shader, uniformTransform);
-
-        object.render();
-    }
-
-    glFlush();
-    glutSwapBuffers();
-}
-
-void update() {
-//    sceneObjects[0].position.z -= 10.0f;
-//    transform->viewPosition.z -= 0.01f;
-    render();
-}
-
-void freeShaders() {
-    glDeleteProgram(shader);
 }
 
 int main(int argc, char **argv) {
@@ -138,7 +146,6 @@ int main(int argc, char **argv) {
         std::cout << "Error: " << glewGetErrorString(glew_status) << "\n";
         return 1;
     }
-
     if (!GLEW_VERSION_2_0)
     {
         std::cout << "No support for OpenGL 2.0 found\n";

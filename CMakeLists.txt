@@ -8,6 +8,7 @@ add_executable(lab12 lab12/main.cpp)
 add_executable(lab13 lab13/main.cpp common/model3D.cpp common/model3D.h)
 add_executable(ind3kostikova ind3kostikova/main.cpp common/common.cpp common/common.h common/model3D.cpp common/model3D.h
         common/sceneObject.cpp common/sceneObject.h)
+add_executable(ind3-bostan ind3-bostan/main.cpp common/model3D.cpp common/sceneObject.cpp common/common.cpp)
 
 # MAIN PATHS AND LIBS
 set(OPENGL_DIRS C:/Users/Lereena/gl)
@@ -23,7 +24,7 @@ include_directories(ind3kostikova ${GLEW_DIRS}/include/)
 set(LIBS_DIRS ${FREEGLUT_DIRS}/lib/freeglut.lib ${GLEW_DIRS}/lib/glew32.lib)
 
 # ADDITIONAL PATHS AND LIBS
-set(SOIL2_DIR D:/MyLibraries/SOIL2/)
+set(SOIL2_DIR C:/MyLibraries/SOIL2/)
 include_directories(lab12 ${SOIL2_DIR}/include/)
 set(SOIL2_LIB ${SOIL2_DIR}/lib/SOIL.lib)
 
@@ -32,3 +33,4 @@ target_link_libraries (lab11 ${LIBS_DIRS} ${SOIL2_LIB})
 target_link_libraries (lab12 ${LIBS_DIRS})
 target_link_libraries (lab13 ${LIBS_DIRS})
 target_link_libraries (ind3kostikova ${LIBS_DIRS})
+target_link_libraries (ind3-bostan ${LIBS_DIRS})
