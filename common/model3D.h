@@ -14,7 +14,7 @@ public:
     int polygonCount;
     int elementCount;
 
-    model3D(const std::string &filePath, float scale);
+    model3D(const std::string &filePath, float scale = 1.0);
 
 private:
     //! To split faces with more than 3 vertices

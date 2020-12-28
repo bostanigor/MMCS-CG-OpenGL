@@ -1,8 +1,3 @@
-#ifndef OPENGLABS_STB_IMAGE_H
-#define OPENGLABS_STB_IMAGE_H
-
-#define STB_IMAGE_IMPLEMENTATION
-
 /* stb_image - v2.26 - public domain image loader - http://nothings.org/stb
                                   no warranty implied; use at your own risk
 
@@ -485,7 +480,7 @@ STBIDEF int      stbi_is_16_bit_from_file(FILE *f);
 STBIDEF void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply);
 
 // indicate whether we should process iphone images back to canonical format,
-// or just pass them through "as-is"
+// or just pass them through "as-is"_stbi_load_from_memory
 STBIDEF void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert);
 
 // flip the image vertically, so the first pixel in the output array is the bottom left
@@ -7765,5 +7760,3 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
-
-#endif //OPENGLABS_STB_IMAGE_H

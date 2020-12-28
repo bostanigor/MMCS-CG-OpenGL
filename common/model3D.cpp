@@ -1,5 +1,5 @@
 #include "model3D.h"
-
+#include <algorithm>
 
 std::vector<std::string> model3D::splitPolygon(std::vector<std::string> &words) {
     std::vector<std::string> result;
@@ -24,6 +24,9 @@ void model3D::parseFile(const std::string &filePath, float scale = 1) {
     polygonCount = 0;
     while(std::getline(in, line)) {
         auto words = split(line);
+        words.erase(std::remove(words.begin(), words.end(), ""), words.end());
+        if (words.size() == 0)
+            continue;
         if (words[0] == "v") {
             positions.push_back({
                    std::stof(words[1]),
@@ -109,7 +112,7 @@ void model3D::initVAO() {
     glBindVertexArray(0);
 }
 
-model3D::model3D(const std::string &filePath, float scale = 1) {
+model3D::model3D(const std::string &filePath, float scale) {
     parseFile(filePath, scale);
     initVBO();
     initVAO();
