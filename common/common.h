@@ -50,13 +50,6 @@ struct vertex
     GLfloat z;
 };
 
-struct vec4 {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat w;
-};
-
 struct vec3 {
     GLfloat x;
     GLfloat y;
@@ -65,6 +58,13 @@ struct vec3 {
     vec3 operator-() {
         return { -x, -y, -z };
     }
+};
+
+struct vec4 {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
 };
 
 struct vec2 {
@@ -190,23 +190,5 @@ public:
         glUniform3f(uniform.get(program, "viewPosition"), viewPosition.x, viewPosition.y, viewPosition.z);
     }
 };
-
-static mat4 rotationYMatrix(float angle) {
-    return {
-            cos(angle), 0.0, sin(angle), 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -sin(angle), 0.0, cos(angle), 0.0,
-            0.0, 0.0, 0.0, 1.0
-    };
-}
-
-static mat4 offsetMatrix(vec3 position) {
-   return {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            position.x, position.y, position.z, 1.0f,
-    };
-}
 
 #endif //OPENGLABS_COMMON_H

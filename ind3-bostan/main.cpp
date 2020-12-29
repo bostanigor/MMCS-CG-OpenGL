@@ -1,8 +1,10 @@
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "../common/common.h"
+#include "../common/transformations.h"
 #include "../common/model3D.h"
 #include "../common/sceneObject.h"
+#include "my_objects.h"
 #include <cmath>
 #include <iostream>
 
@@ -12,13 +14,13 @@ GLuint shader;
 
 int width, height;
 GLfloat angleY = 0.0f;
-GLfloat cameraDistance = 2.0f;
+GLfloat cameraDistance = 3.0f;
 
 UniformStruct uniformLight;
 UniformStruct uniformMaterial;
 UniformStruct uniformTransform;
 
-Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
+Light light = Light({ 0.0, 0.0, 0.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
@@ -27,9 +29,12 @@ Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
 vec4 lightPos = { 0.0, 0.0, 0.0, 1.0f };
 
 Material * material;
+
+mat4 perspectiveMatrix;
 Transform * transform = new Transform {
         {}, {},
 
+        //! normals
         {1.0, 0.0, 0.0,
          0.0, 1.0, 0.0,
          0.0, 0.0, 1.0},
@@ -39,7 +44,7 @@ Transform * transform = new Transform {
 
 mat4 cameraMatrix;
 
-std::vector<sceneObject> sceneObjects;
+std::vector<sceneObject*> sceneObjects;
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,15 +52,18 @@ void render() {
     glEnable(GL_DEPTH_TEST);
 
     light.setUniform(shader, uniformLight);
+    transform->viewProjection = cameraMatrix * perspectiveMatrix;
+//    transform->viewProjection = perspectiveMatrix;
 
     for (auto object : sceneObjects) {
-        material = &(object.material);
-        transform->model = object.getModelTransform() * cameraMatrix;
+        material = &(object->material);
+        auto test = object->getModelTransform();
+        transform->model = object->getModelTransform();
 
         material->setUniform(shader, uniformMaterial);
         transform->setUniform(shader, uniformTransform);
 
-        object.render();
+        object->render();
     }
 
     glFlush();
@@ -73,16 +81,23 @@ void update() {
     };
     transform->viewPosition = cameraPos;
 
-    auto t = lightPos;
     cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
-    light.position = cameraMatrix * lightPos;
-    t = cameraMatrix * t;
+
+    auto floatingEye = sceneObjects[2];
+    floatingEye->rotateOY(-0.03f);
+
+
+    light.position = floatingEye->position;
+    auto t1 = floatingEye->position;
+    auto temp = light.position;
+
+
     render();
 }
 
 void setPerspective(float fov, float aspectRatio, float nearf, float farf) {
     float f = 1.0f / tan(fov * PI / 360);
-    transform->viewProjection = {
+    perspectiveMatrix = {
             f / aspectRatio, 0.0f, 0.0f, 0.0f,
             0.0f, f, 0.0f, 0.0f,
             0.0f, 0.0f, (farf + nearf) / (nearf - farf), -1.0f,
@@ -102,10 +117,10 @@ void freeShaders() {
 }
 
 void initShader() {
-//    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
-//                               "../shaders/lab13/cube_phong_light.fs.c");
-    shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
-                               "../shaders/lab13/toon_shading.fs.c");
+    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
+                               "../shaders/lab13/cube_phong_light.fs.c");
+//    shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+//                               "../shaders/lab13/toon_shading.fs.c");
     glUseProgram(shader);
     uniformLight = UniformStruct("light", {
             "position",
@@ -131,19 +146,10 @@ void initShader() {
 }
 
 void initScene() {
-//    auto cat_m = new model3D("../assets/models/cat/cat.obj", 1.0f / 100.0f);
-//    auto cat_t = loadTex("../assets/models/cat/cat.jpg");
-    auto cat_m = new model3D("../assets/models/cube.obj", (float)(1.0f / 1.0f));
-    auto cat_t = loadTex("../assets/floor.jpg");
-    Material material = { cat_t,
-                          { 1.0f, 0.5f, 0.31f, 1.0f },
-                          { 1.0f, 0.5f, 0.31f, 1.0f },
-                          { 0.5f, 0.5f, 0.5f, 1.0f },
-                          { 0, 0, 0 },
-                          32.0f };
-    sceneObjects.emplace_back(cat_m, material, vec3{-1.0, 0.0f, 0.0});
-    sceneObjects.emplace_back(cat_m, material, vec3{2.0, 1.0f, 0.0});
-//    cat = sceneObject(cat_m, material);
+    sceneObjects.push_back(fox());
+    sceneObjects.push_back(tree());
+    sceneObjects.push_back(eye());
+    sceneObjects.push_back(floor());
 }
 
 int main(int argc, char **argv) {

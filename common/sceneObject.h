@@ -8,11 +8,14 @@ class sceneObject {
 
 public:
     Material material;
-    vec3 position;
+    vec4 position;
+    vec4 scale;
+    GLfloat angleY = 0.0f;
 
     sceneObject() {};
-    sceneObject(model3D * model, Material material, vec3 position = { 0.0f, 0.0f, 0.0f });
+    sceneObject(model3D * model, Material material, vec4 position = { 0.0f, 0.0f, 0.0f, 1.0f }, vec4 scale = { 1.0, 1.0, 1.0, 1.0 });
 
+    void rotateOY(GLfloat angle);
     mat4 getModelTransform();
 
     void render();
