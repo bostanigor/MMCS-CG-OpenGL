@@ -23,6 +23,8 @@ UniformStruct uniformTransform;
 
 vec3 uniformColor = vec3{0.0, 0.0, 1.0};
 GLuint texture2;
+float mixColor;
+float mixTexture;
 
 Light light = Light({ 8.0, 3.0f, 0.0, 1.0 },
                     { 0.5, 0.5, 0.5, 1.0 },
@@ -75,6 +77,9 @@ void update() {
     transform->viewPosition = cameraPos;
 
     glUniform3f(getUniformId("ourColor", shader), uniformColor.x, uniformColor.y, uniformColor.z);
+    glUniform1f(getUniformId("mixColor", shader), mixColor);
+    glUniform1f(getUniformId("mixTexture", shader), mixTexture);
+
     cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
     render();
 }
@@ -125,8 +130,8 @@ void initShader() {
             "normal",
             "viewPosition"
     }, {shader});
-    uniformColor = vec3{0.0, 0.0, 0.1};
-    texture2 = loadTex("../assets/models/table/wood.jpg");
+    uniformColor = vec3{0.0, 0.0, 1.0};
+    texture2 = loadTex("../assets/glitter.jpg");
 }
 
 void initScene() {
@@ -181,6 +186,20 @@ void initScene() {
     sceneObjects.emplace_back(rug, rug_material, vec3{0.0, 0.0, 0.0}, 1.57);
 }
 
+void specialKeys(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_F1:
+            mixColor = 0.5;
+            mixTexture = 0.5;
+            break;
+        case GLUT_KEY_F2:
+            mixColor = 0.0;
+            mixTexture = 0.0;
+            break;
+    }
+    glutPostRedisplay();
+}
+
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE);
@@ -206,6 +225,7 @@ int main(int argc, char **argv) {
     glutReshapeFunc(resizeWindow);
     glutDisplayFunc(render);
     glutIdleFunc(update);
+    glutSpecialFunc(specialKeys);
     glutMainLoop();
     freeShaders();
 }

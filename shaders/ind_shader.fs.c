@@ -32,6 +32,8 @@ in Vertex {
 } Vert;
 
 uniform vec3 ourColor;
+uniform float mixColor;
+uniform float mixTexture;
 
 void main(void) {
     vec3 normal = normalize(Vert.normal);
@@ -49,5 +51,5 @@ void main(void) {
     float RdotVpow = max(pow(dot(reflect(-lightDir, normal), viewDir), material.shininess), 0.0);
     color += material.specular * light.specular * RdotVpow * attenuation;
 
-    color *= mix(mix(texture(material.texture, Vert.texcoord), texture(material.texture2, Vert.texcoord), 0.5), vec4(ourColor, 1.0), 0.7);
+    color *= mix(mix(texture(material.texture, Vert.texcoord), texture(material.texture2, Vert.texcoord), mixTexture), vec4(ourColor, 1.0), mixColor);
 }
