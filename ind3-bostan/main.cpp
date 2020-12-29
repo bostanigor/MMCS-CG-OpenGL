@@ -10,7 +10,8 @@
 
 #define PI 3.1415
 
-GLuint shader;
+std::vector<GLuint> shaders;
+GLuint currentShader;
 
 int width, height;
 GLfloat angleY = 0.0f;
@@ -25,8 +26,13 @@ Light light = Light({ 0.0, 0.0, 0.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0 });
-// True position of light
-vec4 lightPos = { 0.0, 0.0, 0.0, 1.0f };
+
+Light turnedOffLight = Light({ 0.0, 0.0, 0.0, 0.0 },
+                            { 0.0, 0.0, 0.0, 0.0 },
+                            { 0.0, 0.0, 0.0, 0.0 },
+                            { 0.0, 0.0, 0.0, 0.0 },
+                            { 0.0, 0.0, 0.0 });
+bool lightsOn = true;
 
 Material * material;
 
@@ -51,17 +57,19 @@ void render() {
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
 
-    light.setUniform(shader, uniformLight);
+    if (lightsOn)
+        light.setUniform(currentShader, uniformLight);
+    else
+        turnedOffLight.setUniform(currentShader, uniformLight);
+
     transform->viewProjection = cameraMatrix * perspectiveMatrix;
-//    transform->viewProjection = perspectiveMatrix;
 
     for (auto object : sceneObjects) {
         material = &(object->material);
-        auto test = object->getModelTransform();
         transform->model = object->getModelTransform();
 
-        material->setUniform(shader, uniformMaterial);
-        transform->setUniform(shader, uniformTransform);
+        material->setUniform(currentShader, uniformMaterial);
+        transform->setUniform(currentShader, uniformTransform);
 
         object->render();
     }
@@ -71,8 +79,6 @@ void render() {
 }
 
 void update() {
-//    sceneObjects[0].position.z -= 10.0f;
-//    transform->viewPosition.z -= 0.01f;
     angleY += 0.01f;
     vec3 cameraPos = {
             cameraDistance * sin(angleY),
@@ -85,12 +91,7 @@ void update() {
 
     auto floatingEye = sceneObjects[2];
     floatingEye->rotateOY(-0.03f);
-
-
     light.position = floatingEye->position;
-    auto t1 = floatingEye->position;
-    auto temp = light.position;
-
 
     render();
 }
@@ -113,22 +114,28 @@ void resizeWindow(int w, int h) {
 }
 
 void freeShaders() {
-    glDeleteProgram(shader);
+    for (auto shader : shaders)
+        glDeleteProgram(shader);
 }
 
 void initShader() {
-    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
-                               "../shaders/lab13/cube_phong_light.fs.c");
-//    shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
-//                               "../shaders/lab13/toon_shading.fs.c");
-    glUseProgram(shader);
+    shaders.push_back(initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
+                               "../shaders/lab13/cube_phong_light.fs.c"));
+    shaders.push_back(initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                               "../shaders/lab13/toon_shading.fs.c"));
+    shaders.push_back(initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
+                               "../shaders/lab13/bidirectional.fs.c"));
+
+    currentShader = shaders[0];
+    glUseProgram(currentShader);
+
     uniformLight = UniformStruct("light", {
             "position",
             "ambient",
             "diffuse",
             "specular",
             "attenuation",
-    }, {shader});
+    }, shaders);
     uniformMaterial = UniformStruct("material", {
             "texture",
             "ambient",
@@ -136,13 +143,13 @@ void initShader() {
             "specular",
             "emission",
             "shininess",
-    }, {shader});
+    }, shaders);
     uniformTransform = UniformStruct("transform", {
             "model",
             "viewProjection",
             "normal",
             "viewPosition"
-    }, {shader});
+    }, shaders);
 }
 
 void initScene() {
@@ -150,6 +157,18 @@ void initScene() {
     sceneObjects.push_back(tree());
     sceneObjects.push_back(eye());
     sceneObjects.push_back(floor());
+    sceneObjects.push_back(boxes());
+}
+
+void specialKeys(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_F1: lightsOn = !lightsOn; break;
+        case GLUT_KEY_F2: currentShader = shaders[0]; break;
+        case GLUT_KEY_F3: currentShader = shaders[1]; break;
+        case GLUT_KEY_F4: currentShader = shaders[2]; break;
+    }
+    glUseProgram(currentShader);
+    glutPostRedisplay();
 }
 
 int main(int argc, char **argv) {
@@ -180,7 +199,7 @@ int main(int argc, char **argv) {
     glutReshapeFunc(resizeWindow);
     glutDisplayFunc(render);
     glutIdleFunc(update);
-//    glutSpecialFunc(specialKeys);
+    glutSpecialFunc(specialKeys);
     glutMainLoop();
     //! Освобождение ресурсов
     freeShaders();

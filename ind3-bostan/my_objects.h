@@ -53,4 +53,16 @@ static sceneObject * floor() {
                            { 1.0, 0.05, 1.0, 0.5f });
 }
 
+static sceneObject * boxes() {
+    auto model = new model3D("../assets/models/boxes/boxes.obj", 1.0f / 5.0f);
+    auto texture = loadTex("../assets/models/boxes/boxes.png");
+    Material material = { texture,
+                          { 1.0f, 1.0f, 1.0f, 0.5f },
+                          { 1.0f, 1.0f, 1.0f, 1.0f },
+                          { 0.09f, 0.09f, 0.09f, 1.0f },
+                          { 0.1f, 0.1f, 0.1f },
+                          10.0f };
+    return new sceneObject(model, material, { -0.5, -1.0, -0.5, 1.0 });
+}
+
 #endif //OPENGLABS_MY_OBJECTS_H
