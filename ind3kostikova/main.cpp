@@ -14,32 +14,33 @@ int width, height;
 GLfloat angleY = 0.0f;
 GLfloat cameraDistance = 3.0f;
 
+mat4 cameraMatrix;
+std::vector<sceneObject> sceneObjects;
+
 UniformStruct uniformLight;
 UniformStruct uniformMaterial;
 UniformStruct uniformTransform;
 
-Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
+vec3 uniformColor = vec3{0.0, 0.0, 1.0};
+GLuint texture2;
+
+Light light = Light({ 8.0, 3.0f, 0.0, 1.0 },
                     { 0.5, 0.5, 0.5, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0 });
-// True position of light
-vec4 lightPos = { 0.0, 0.0, 0.0, 1.0f };
 
 Material * material;
-Transform * transform = new Tr1ansform {
+Transform * transform = new Transform {
         {}, {},
 
         {1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0},
+         0.0, 1.0, 0.0,
+         0.0, 0.0, 1.0},
 
         { 0.0, 0.0, 0.0f}
 };
 
-mat4 cameraMatrix;
-
-std::vector<sceneObject> sceneObjects;
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -48,12 +49,14 @@ void render() {
 
     light.setUniform(shader, uniformLight);
 
+
     for (auto object : sceneObjects) {
         material = &(object.material);
         transform->model = object.getModelTransform() * cameraMatrix;
 
-        material->setUniform(shader, uniformMaterial);
+        material->setUniform(shader, uniformMaterial, texture2);
         transform->setUniform(shader, uniformTransform);
+
 
         object.render();
     }
@@ -71,8 +74,8 @@ void update() {
     };
     transform->viewPosition = cameraPos;
 
+    glUniform3f(getUniformId("ourColor", shader), uniformColor.x, uniformColor.y, uniformColor.z);
     cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
-    light.position = /*cameraMatrix * */ lightPos;
     render();
 }
 
@@ -98,8 +101,8 @@ void freeShaders() {
 }
 
 void initShader() {
-    shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
-                               "../shaders/lab13/cube_phong_light.fs.c");
+    shader = initShaderProgram("../shaders/ind_shader.vs.c",
+                               "../shaders/ind_shader.fs.c");
     glUseProgram(shader);
     uniformLight = UniformStruct("light", {
             "position",
@@ -122,15 +125,17 @@ void initShader() {
             "normal",
             "viewPosition"
     }, {shader});
+    uniformColor = vec3{0.0, 0.0, 0.1};
+    texture2 = loadTex("../assets/models/table/wood.jpg");
 }
 
 void initScene() {
     auto table_model = new model3D("../assets/models/table/table.obj", (float)(1.0f / 1.5f));
     auto table_texture = loadTex("../assets/models/table/wood.jpg");
     Material material = {table_texture,
-                         { 1.0f, 0.5f, 0.5f, 1.0f },
-                         { 1.0f, 0.5f, 0.5f, 1.0f },
-                         { 0.5f, 0.5f, 0.5f, 1.0f },
+                         { 1.0f, 1.0f, 1.0f, 1.0f },
+                         { 1.0f, 1.0f, 1.0f, 1.0f },
+                         { 1.0f, 1.0f, 1.0f, 1.0f },
                          { 0, 0, 0 },
                          32.0f };
     sceneObjects.emplace_back(table_model, material, vec3{0.0, 0.0f, 0.0});
@@ -168,9 +173,9 @@ void initScene() {
     auto rug = new model3D("../assets/models/rug/rug.obj", (float)(1.0f / 40.0f));
     auto rug_texture = loadTex("../assets/models/rug/rug.jpg");
     Material rug_material = {rug_texture,
-                             { 0.4f, 0.4f, 0.4f, 1.0f },
-                             { 0.4f, 0.4f, 0.4f, 1.0f },
-                             { 0.4f, 0.4f, 0.4f, 1.0f },
+                             { 1.0f, 1.0f, 1.0f, 1.0f },
+                             { 1.0f, 1.0f, 1.0f, 1.0f },
+                             { 1.0f, 1.0f, 1.0f, 1.0f },
                                  { 0, 0, 0 },
                                  80.0f };
     sceneObjects.emplace_back(rug, rug_material, vec3{0.0, 0.0, 0.0}, 1.57);
