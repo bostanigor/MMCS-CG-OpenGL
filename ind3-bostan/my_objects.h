@@ -65,4 +65,16 @@ static sceneObject * boxes() {
     return new sceneObject(model, material, { -0.5, -1.0, -0.5, 1.0 });
 }
 
+static sceneObject * sky() {
+    auto model = new model3D("../assets/models/sphere/sphere.obj");
+    auto texture = loadTex("../assets/models/sphere/big_sky.jpg");
+    Material material = { texture,
+                          { 1.0f, 1.0f, 1.0f, 1.0f },
+                          { 1.0f, 1.0f, 1.0f, 1.0f },
+                          { 0.09f, 0.09f, 0.09f, 1.0f },
+                          { 1.0f, 1.0f, 1.0f },
+                          0.0f };
+    return new sceneObject(model, material, { 0.0f, 0.0f, 0.0f, 1.0f });
+}
+
 #endif //OPENGLABS_MY_OBJECTS_H

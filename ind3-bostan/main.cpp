@@ -31,7 +31,7 @@ Light turnedOffLight = Light({ 0.0, 0.0, 0.0, 0.0 },
                             { 0.0, 0.0, 0.0, 0.0 },
                             { 0.0, 0.0, 0.0, 0.0 },
                             { 0.0, 0.0, 0.0, 0.0 },
-                            { 0.0, 0.0, 0.0 });
+                            { 1.0f, 1.0f, 1.0f  });
 bool lightsOn = true;
 
 Material * material;
@@ -158,6 +158,7 @@ void initScene() {
     sceneObjects.push_back(eye());
     sceneObjects.push_back(floor());
     sceneObjects.push_back(boxes());
+    sceneObjects.push_back(sky());
 }
 
 void specialKeys(int key, int x, int y) {
