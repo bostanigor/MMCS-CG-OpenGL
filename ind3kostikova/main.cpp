@@ -19,7 +19,7 @@ UniformStruct uniformMaterial;
 UniformStruct uniformTransform;
 
 Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
-                    { 1.0, 1.0, 1.0, 1.0 },
+                    { 0.5, 0.5, 0.5, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0, 1.0 },
                     { 1.0, 1.0, 1.0 });
@@ -27,7 +27,7 @@ Light light = Light({ 10.0, 0.0f, 0.0, 1.0 },
 vec4 lightPos = { 0.0, 0.0, 0.0, 1.0f };
 
 Material * material;
-Transform * transform = new Transform {
+Transform * transform = new Tr1ansform {
         {}, {},
 
         {1.0, 0.0, 0.0,
@@ -63,8 +63,6 @@ void render() {
 }
 
 void update() {
-//    sceneObjects[0].position.z -= 10.0f;
-//    transform->viewPosition.z -= 0.01f;
     angleY += 0.001f;
     vec3 cameraPos = {
             cameraDistance * sin(angleY),
@@ -73,10 +71,8 @@ void update() {
     };
     transform->viewPosition = cameraPos;
 
-    auto t = lightPos;
     cameraMatrix = offsetMatrix(-cameraPos) * rotationYMatrix(angleY);
-    light.position = cameraMatrix * lightPos;
-    t = cameraMatrix * t;
+    light.position = /*cameraMatrix * */ lightPos;
     render();
 }
 
@@ -102,8 +98,6 @@ void freeShaders() {
 }
 
 void initShader() {
-//    shader = initShaderProgram("../shaders/lab13/cube_phong_light.vs.c",
-//                               "../shaders/lab13/cube_phong_light.fs.c");
     shader = initShaderProgram("../shaders/lab13/blinn_phong_source.vs.c",
                                "../shaders/lab13/cube_phong_light.fs.c");
     glUseProgram(shader);
@@ -178,8 +172,8 @@ void initScene() {
                              { 0.4f, 0.4f, 0.4f, 1.0f },
                              { 0.4f, 0.4f, 0.4f, 1.0f },
                                  { 0, 0, 0 },
-                                 1.0f };
-    sceneObjects.emplace_back(rug, rug_material, vec3{0.0, .0, 0.0}, 1.57);
+                                 80.0f };
+    sceneObjects.emplace_back(rug, rug_material, vec3{0.0, 0.0, 0.0}, 1.57);
 }
 
 int main(int argc, char **argv) {
