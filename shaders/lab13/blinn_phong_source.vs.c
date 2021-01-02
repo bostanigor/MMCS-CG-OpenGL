@@ -24,6 +24,7 @@ out Vertex {
 	vec3 normal;
 	vec3 lightDir;
 	vec3 viewDir;
+	vec3 position;
 	float distance;
 } Vert;
 
@@ -39,5 +40,6 @@ void main() {
 	Vert.normal   = transform.normal * normal;
 	Vert.lightDir = vec3(light.position);
 	Vert.viewDir  = transform.viewPosition - vec3(vertex);
+	Vert.position = vec3(vertex);
 	gl_Position = transform.viewProjection * vertex;
 };

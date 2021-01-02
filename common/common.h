@@ -132,9 +132,16 @@ struct Material {
         : texture(texture), ambient(ambient), diffuse(diffuse), specular(specular), emission(emission), shininess(shininess) {}
 
 public:
-    void setUniform(GLuint program, UniformStruct uniform) const {
+    void setUniform(GLuint program, UniformStruct uniform, GLuint t2) const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, t2);
+
+        glUniform1i(getUniformId("material.texture", program), 0);
+        glUniform1i(getUniformId("material.texture2", program), 1);
+
         glUniform4f(uniform.get(program, "ambient"), ambient.x, ambient.y, ambient.z, ambient.w);
         glUniform4f(uniform.get(program, "diffuse"), diffuse.x, diffuse.y, diffuse.z, diffuse.w);
         glUniform4f(uniform.get(program, "specular"), specular.x, specular.y, specular.z, specular.w);

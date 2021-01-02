@@ -26,12 +26,13 @@ in Vertex {
         vec3 normal;
         vec3 lightDir;
         vec3 viewDir;
+        vec3 position;
         float distance;
 } Vert;
 
 void main(void) {
     vec3 normal = normalize(Vert.normal);
-    vec3 lightDir = normalize(Vert.lightDir);
+    vec3 lightDir = normalize(vec3(light.position) - Vert.position);
     vec3 viewDir = normalize(Vert.viewDir);
 
     float attenuation = 1.0 / (light.attenuation[0] +

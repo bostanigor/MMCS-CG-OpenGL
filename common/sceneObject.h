@@ -9,9 +9,10 @@ class sceneObject {
 public:
     Material material;
     vec3 position;
+    float angle;
 
     sceneObject() {};
-    sceneObject(model3D * model, Material material, vec3 position = { 0.0f, 0.0f, 0.0f });
+    sceneObject(model3D * model, Material material, vec3 position = { 0.0f, 0.0f, 0.0f }, float angle = 0.0);
 
     mat4 getModelTransform();
 
